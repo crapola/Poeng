@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/PoengSDL" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/Poeng_dbg" prefix_auto="1" extension_auto="1" />
 				<Option object_output="bin/obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -17,7 +17,19 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/PoengSDL" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/Poeng" prefix_auto="1" extension_auto="1" />
+				<Option object_output="bin/obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Release static">
+				<Option output="bin/ReleaseStatic/Poengs" prefix_auto="1" extension_auto="1" />
 				<Option object_output="bin/obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
