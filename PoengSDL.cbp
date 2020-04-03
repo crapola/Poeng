@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="PoengSDL" />
+		<Option makefile="makefile123456" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/PoengSDL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="bin/obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/PoengSDL" prefix_auto="1" extension_auto="1" />
+				<Option object_output="bin/obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="$(#sdl2.include)" />
+			<Add directory="$(#sdl2_mixer.INCLUDE)" />
+		</Compiler>
+		<Linker>
+			<Add library="mingw32" />
+			<Add library="SDL2main" />
+			<Add library="SDL2.dll" />
+			<Add library="user32" />
+			<Add library="gdi32" />
+			<Add library="winmm" />
+			<Add library="dxguid" />
+			<Add library="sdl2_mixer" />
+			<Add directory="$(#sdl2.lib)" />
+			<Add directory="$(#sdl2_mixer.LIB)" />
+		</Linker>
+		<Unit filename="resources/resources.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="src/audio.cpp" />
+		<Unit filename="src/audio.h" />
+		<Unit filename="src/bitmap.cpp" />
+		<Unit filename="src/bitmap.h" />
+		<Unit filename="src/font.cpp" />
+		<Unit filename="src/font.h" />
+		<Unit filename="src/game.cpp" />
+		<Unit filename="src/game.h" />
+		<Unit filename="src/gameview.cpp" />
+		<Unit filename="src/gameview.h" />
+		<Unit filename="src/highscores.cpp" />
+		<Unit filename="src/highscores.h" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/scenes/playing.cpp" />
+		<Unit filename="src/scenes/playing.h" />
+		<Unit filename="src/scenes/scene.cpp" />
+		<Unit filename="src/scenes/scene.h" />
+		<Unit filename="src/scenes/scores.cpp" />
+		<Unit filename="src/scenes/scores.h" />
+		<Unit filename="src/scenes/title.cpp" />
+		<Unit filename="src/scenes/title.h" />
+		<Unit filename="src/texture.cpp" />
+		<Unit filename="src/texture.h" />
+		<Unit filename="src/window.cpp" />
+		<Unit filename="src/window.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>
