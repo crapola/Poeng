@@ -95,37 +95,32 @@ int Game::Lives() const
 }
 void Game::LoadLevels(const char* p_file)
 {
-	// Load tiles.
 	std::ifstream file(p_file,std::ios::binary);
-	if (!file.is_open())
+	std::vector<char> file_content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	std::transform(file_content.begin(),file_content.end(),file_content.begin(),
+				   [](Cell c)
 	{
-		throw std::runtime_error("Levels file not found.");
+		// Convert metal.
+		if (c==BrickTypes::METAL1) c=BrickTypes::METAL2;
+		return c;
 	}
-	for (auto& arr:*_levels)
+				  );
+	const size_t kSize=kMapW*kMapH;
+	size_t num=std::min(_levels->size(),file_content.size()/kSize);
+	//std::cout<<"There are "<<num<<" levels\n";
+	for (size_t i=0; i<num; ++i)
 	{
-		file.read((char*)arr.tiles.begin(),sizeof(arr.tiles));
-	}
-	// Count bricks.
-	for (auto& arr:*_levels)
-	{
+		auto file_it=file_content.begin()+i*kSize;
+		auto tiles_it=_levels->at(i).tiles.begin();
+		std::copy_n(file_it,kSize,tiles_it);
+		// Wall strength.
+		_levels->at(i).wall_strength=10+i/2;
+		// Count breakables.
 		auto breakable=[](const Cell& c)
 		{
 			return c>BrickTypes::NONE&&c!=BrickTypes::SOLID;
 		};
-		arr.bricks=std::count_if(arr.tiles.begin(),arr.tiles.end(),breakable);
-	}
-	// Convert metal
-	for (auto& arr:*_levels)
-	{
-		for (Cell& c:arr.tiles)
-		{
-			if (c==BrickTypes::METAL1) c=BrickTypes::METAL2;
-		}
-	}
-	// Wall strength.
-	for (size_t i=0;i<kLevelCount;++i)
-	{
-		(*_levels).at(i).wall_strength=10+i/2;
+		_levels->at(i).bricks=std::count_if(_levels->at(i).tiles.begin(),_levels->at(i).tiles.end(),breakable);
 	}
 	// Keep copy to reset.
 	*_levels_copy=*_levels;

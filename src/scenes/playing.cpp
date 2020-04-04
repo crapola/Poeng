@@ -272,7 +272,6 @@ void Playing::Update(UP_PARAMS)
 {
 	if (_paused || _win) return;
 	++_timer;
-
 	p_game.PlayerMove(_mouse_x-_mouse_x_prev,_mouse_y);
 	_mouse_x_prev=_mouse_x;
 	if (_mouse_button) p_game.Fire();
