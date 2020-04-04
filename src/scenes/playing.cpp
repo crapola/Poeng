@@ -15,9 +15,13 @@ void Playing::Enter(ENTER_PARAMS)
 {
 	p_game.Start();
 	_vfx.clear();
+	// Capture pointer inside window.
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 void Playing::Exit()
-{}
+{
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+}
 void Playing::Event(EVENT_PARAMS)
 {
 	switch (p_event.type)
@@ -53,6 +57,7 @@ void Playing::Event(EVENT_PARAMS)
 			break;
 		case SDLK_p:
 			_paused=!_paused;
+			SDL_SetRelativeMouseMode(_paused?SDL_FALSE:SDL_TRUE);
 			break;
 		case SDLK_ESCAPE:
 		{
@@ -65,11 +70,17 @@ void Playing::Event(EVENT_PARAMS)
 				SDL_PushEvent(&sent);
 			}
 			_paused=!_paused;
+			SDL_SetRelativeMouseMode(_paused?SDL_FALSE:SDL_TRUE);
 		}
 		break;
 		default:
 			_win=false;
-			_paused=_paused?false:_paused;
+			// Unpause.
+			if (_paused)
+			{
+				_paused=false;
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+			}
 			break;
 		}
 		break;
