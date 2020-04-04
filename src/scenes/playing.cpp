@@ -30,19 +30,24 @@ void Playing::Event(EVENT_PARAMS)
 		if (p_event.button.button && SDL_BUTTON_LEFT)
 		{
 			_mouse_button=true;
-			_paused=false;
+			if (_paused)
+			{
+				_paused=false;
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+			}
 		}
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (p_event.button.button && SDL_BUTTON_LEFT)
 		{
 			_mouse_button=false;
-			//p_game.Fire();
 		}
 		break;
 	case SDL_MOUSEMOTION:
+		// TODO: xrel reports smaller values when mouse captured...
 		_mouse_x=p_event.motion.xrel;
 		_mouse_y=p_event.motion.y;
+		//SDL_Log("mouse %d,%d",_mouse_x,_mouse_y);
 		break;
 	case SDL_KEYUP:
 		switch (p_event.key.keysym.sym)

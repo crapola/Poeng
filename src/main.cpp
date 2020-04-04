@@ -55,6 +55,12 @@ int main(int, char**) try
 					{
 						// TODO: Resizing.
 						// The window surface gets destroyed on resize.
+
+						// Letterboxing.
+						int w=event.window.data1;
+						int h=event.window.data2;
+						SDL_Rect rect{(w-640)/2,(h-480)/2,640,480};
+						SDL_RenderSetViewport(renderer,&rect);
 					}
 					break;
 				case SDL_WINDOWEVENT_RESTORED:
