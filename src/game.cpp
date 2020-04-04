@@ -96,15 +96,18 @@ int Game::Lives() const
 void Game::LoadLevels(const char* p_file)
 {
 	std::ifstream file(p_file,std::ios::binary);
-	std::vector<char> file_content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-	std::transform(file_content.begin(),file_content.end(),file_content.begin(),
-				   [](Cell c)
+	if (!file.is_open())
 	{
-		// Convert metal.
+		throw std::runtime_error(std::string("Levels file not found: ")+std::string(p_file));
+		return;
+	}
+	std::vector<char> file_content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	auto convertmetal=[](Cell c)
+	{
 		if (c==BrickTypes::METAL1) c=BrickTypes::METAL2;
 		return c;
-	}
-				  );
+	};
+	std::transform(file_content.begin(),file_content.end(),file_content.begin(),convertmetal);
 	const size_t kSize=kMapW*kMapH;
 	size_t num=std::min(_levels->size(),file_content.size()/kSize);
 	//std::cout<<"There are "<<num<<" levels\n";
