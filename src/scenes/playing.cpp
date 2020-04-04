@@ -17,6 +17,7 @@ void Playing::Enter(ENTER_PARAMS)
 	_vfx.clear();
 	// Capture pointer inside window.
 	SDL_SetRelativeMouseMode(SDL_TRUE);
+	_mouse_x=_mouse_x_prev=0;
 }
 void Playing::Exit()
 {
@@ -44,8 +45,8 @@ void Playing::Event(EVENT_PARAMS)
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		// TODO: xrel reports smaller values when mouse captured...
-		_mouse_x=p_event.motion.xrel;
+		//_mouse_x=p_event.motion.xrel; Updates too fast.
+		_mouse_x=p_event.motion.x;
 		_mouse_y=p_event.motion.y;
 		//SDL_Log("mouse %d,%d",_mouse_x,_mouse_y);
 		break;
@@ -271,7 +272,9 @@ void Playing::Update(UP_PARAMS)
 {
 	if (_paused || _win) return;
 	++_timer;
-	p_game.PlayerMove(_mouse_x,_mouse_y);
+
+	p_game.PlayerMove(_mouse_x-_mouse_x_prev,_mouse_y);
+	_mouse_x_prev=_mouse_x;
 	if (_mouse_button) p_game.Fire();
 	p_game.Tick();
 	GameEvent ge;

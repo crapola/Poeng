@@ -134,7 +134,7 @@ void Game::PlayerMove(int p_x,int p_y)
 {
 	_player_y=p_y+(64-p_y)*(p_y<64)+((416-PlayerSize())-p_y)*(p_y>(416-PlayerSize()));
 	_player_push=std::max(_player_push,p_x);
-	_player_push=std::min(_player_push,256);
+	_player_push=std::min(_player_push,128);
 	_player_push=std::max(_player_push,0);
 	_player_push--;
 }

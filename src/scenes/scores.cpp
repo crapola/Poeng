@@ -11,7 +11,9 @@ Scores::Scores()
 }
 Scores::~Scores()
 {
+#ifdef NDEBUG
 	_scores.Save();
+#endif
 }
 void Scores::Enter(ENTER_PARAMS)
 {

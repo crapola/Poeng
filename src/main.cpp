@@ -58,12 +58,12 @@ int main(int, char**) try
 						SDL_RenderSetScale(renderer,1,1);
 						const int w=event.window.data1;
 						const int h=event.window.data2;
-						int size=(w>=1280 && h>=960)?2:1;
+						const int size=(w>=1280 && h>=960)?2:1;
 						const int kW=640*size;
 						const int kH=480*size;
 						const int x=std::max(0,w-kW)/2;
 						const int y=std::max(0,h-kH)/2;
-						SDL_Rect rect{x,y,kW,kH};
+						const SDL_Rect rect{x,y,kW,kH};
 						SDL_RenderSetViewport(renderer,&rect);
 						SDL_RenderSetScale(renderer,size,size);
 					}

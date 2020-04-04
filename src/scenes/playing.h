@@ -31,6 +31,7 @@ private:
 	std::vector<Effect> _vfx{};
 	uint8_t _timer{};
 	int _mouse_x{},_mouse_y{240};
+	int _mouse_x_prev{}; // Previous frame mouse x.
 	bool _mouse_button{false};
 	bool _paused{false};
 	bool _win{false};
