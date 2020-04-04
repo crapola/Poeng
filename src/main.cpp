@@ -53,23 +53,19 @@ int main(int, char**) try
 				case SDL_WINDOWEVENT_RESIZED:
 					SDL_Log("Window %d resized", event.window.windowID);
 					{
-						// Letterboxing.
-						int w=event.window.data1;
-						int h=event.window.data2;
-						int x=std::max(0,w-640)/2;
-						int y=std::max(0,h-480)/2;
-						SDL_Rect rect{x,y,640,480};
-						SDL_RenderSetViewport(renderer,&rect);
+						// Letterboxing and resizing.
+						// Reset scale first for consistant behaviour.
 						SDL_RenderSetScale(renderer,1,1);
-						// Resize if there's room.
-						if (w>=1280 && h>=960)
-						{
-							x=std::max(0,w-1280)/2;
-							y=std::max(0,h-960)/2;
-							SDL_Rect rect{x,y,1280,960};
-							SDL_RenderSetViewport(renderer,&rect);
-							SDL_RenderSetScale(renderer,2,2);
-						}
+						const int w=event.window.data1;
+						const int h=event.window.data2;
+						int size=(w>=1280 && h>=960)?2:1;
+						const int kW=640*size;
+						const int kH=480*size;
+						const int x=std::max(0,w-kW)/2;
+						const int y=std::max(0,h-kH)/2;
+						SDL_Rect rect{x,y,kW,kH};
+						SDL_RenderSetViewport(renderer,&rect);
+						SDL_RenderSetScale(renderer,size,size);
 					}
 					break;
 				case SDL_WINDOWEVENT_RESTORED:
