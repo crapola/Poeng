@@ -105,6 +105,8 @@ void Game::LoadLevels(const char* p_file)
 	auto convertmetal=[](Cell c)
 	{
 		if (c==BrickTypes::METAL1) c=BrickTypes::METAL2;
+		// Also remove out of range stuff.
+		if (c>BrickTypes::POWER_BOMB) c=BrickTypes::NONE;
 		return c;
 	};
 	std::transform(file_content.begin(),file_content.end(),file_content.begin(),convertmetal);
