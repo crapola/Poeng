@@ -5,6 +5,7 @@
 //#define BONUS_DEBUG 1
 namespace poeng
 {
+/*
 // Load the old level file.
 void LevelsLegacyLoad(std::array<Level,32>* p_out_lvl)
 {
@@ -32,6 +33,7 @@ void LevelsSave(const std::array<Level,32>& p_lvls)
 		out.write((char*)tm.tiles.begin(),sizeof(tm.tiles));
 	}
 }
+*/
 Game::Game()
 {
 	_balls.reserve(kBallNum);
@@ -180,6 +182,8 @@ void Game::Start()
 	_balls_temp.clear();
 	_balls.push_back({15,15,0.5,0.25});
 	_balls[0].glued=true;
+	std::random_shuffle(_levels->begin(),_levels->end());
+
 	//test
 	//_balls.push_back({550,150,-3.75,1.325});
 	// Test lots of balls
@@ -191,7 +195,8 @@ void Game::Start()
 			std::fill(tm.tiles.begin(),tm.tiles.end(),rand()%(BrickTypes::POWER_BOMB+1) );
 			tm.wall_strength=500000;
 	}
-	//*/
+	*/
+
 }
 void Game::Tick()
 {
@@ -523,7 +528,9 @@ void Game::Win()
 {
 	_events.push({GameEvent::WIN,0,0,0});
 	auto score=_score;
+	auto li=_lives;
 	Start();
-	_score=score;
+	_score=score+10000;
+	_lives=li+1;
 }
 }

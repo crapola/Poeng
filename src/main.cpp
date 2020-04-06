@@ -1,4 +1,5 @@
 // std
+#include <ctime>
 #include <iostream>
 // local
 #include "gameview.h"
@@ -19,6 +20,7 @@ int main(int, char**) try
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Renderer creation failed: %s\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
+	srand(std::time(nullptr));
 	poeng::GameView game_view;
 	game_view.LoadImages();
 	game_view.CreateTextures(renderer);
