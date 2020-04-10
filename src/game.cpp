@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-//#define BONUS_DEBUG 1
+//#define BONUS_DEBUG 3
 namespace poeng
 {
 /*
@@ -184,7 +184,7 @@ void Game::Start()
 	_score=0;
 	_balls.clear();
 	_balls_next.clear();
-	_balls_temp.clear();
+	//_balls_temp.clear();
 	_balls.push_back({15,15,0.5,0.25});
 	_balls[0].glued=true;
 	std::random_shuffle(_levels->begin(),_levels->end());
@@ -472,27 +472,44 @@ void Game::Tick()
 		}
 		return 0;
 	};
-	auto bricks=[&](Object& o)
+	// Return number of new balls.
+	auto bricks=[&](Object& o)->int
 	{
 		// Repeat four times.
 		for (int j=0; j<4; ++j)
 		{
 			auto ci=Collide(o);
 			if (!ci) continue;
-			Break((*ci).x/kBrickW,(*ci).y/kBrickH-2,o);
+			const int gx=(*ci).x/kBrickW;
+			const int gy=(*ci).y/kBrickH-2;
+			auto b=Break(gx,gy,o);
+			if (b)
+			{
+				if (*b>=BrickTypes::POWER_SIZE)
+				{
+					int new_balls=BonusCollect(*b,o,gx,gy);
+					*b=0;
+					return new_balls;
+				}
+				if (*b==0)
+				{
+					BonusSpawn(b);
+				}
+			}
 		}
+		return 0;
 	};
 	int passed=0;
 	int lost=0;
+	int new_balls=0;
 	for (auto& b:_balls)
 	{
 		movement(b);
 		borders(b);
 		player(b);
-		bricks(b);
+		new_balls+=bricks(b);
 		lost+=loss(b,_balls.size()-passed-lost);
 		passed+=wall(b,_balls.size()-passed-lost);
-
 	}
 	// Delete lost and passed balls.
 	auto deleteball=[](const Object& o)
@@ -501,8 +518,13 @@ void Game::Tick()
 	};
 	_balls.erase(std::remove_if(_balls.begin(),_balls.end(),deleteball),_balls.end());
 	// Add extra balls.
-	std::move(std::begin(_balls_temp),std::end(_balls_temp),std::back_inserter(_balls));
-	_balls_temp.clear();
+	Object o=_balls.back();
+	for (int i=0;i<new_balls;++i)
+	{
+		BallSpawn(o);
+	}
+	//std::move(std::begin(_balls_temp),std::end(_balls_temp),std::back_inserter(_balls));
+	//_balls_temp.clear();
 	// Update laser.
 	LaserUpdate();
 }
@@ -517,16 +539,60 @@ void Game::BallSpawn(Object o)
 	o.vx=std::abs(o.vx+(rand()%10)/10.f);
 	o.vy=std::abs(o.vy+(rand()%10)/10.f);
 	if (_balls.size()<kBallNum)
-		_balls_temp.push_back(o);
+		_balls.push_back(o);
 }
-// x,y in tiles
-void Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p_destroy)
+//<Number of new balls.
+int Game::BonusCollect(Cell p_c,Object& p_instigator,int p_gx,int p_gy)
+{
+	_events.push({GameEvent::COLLECT_POWER,p_c,p_gx*kBrickW,p_gy*kBrickH});
+	switch (p_c)
+	{
+	case BrickTypes::POWER_SIZE:
+		_player_power=BrickTypes::POWER_SIZE;
+		break;
+	case BrickTypes::POWER_GLUE:
+		_player_power=BrickTypes::POWER_GLUE;
+		break;
+	case BrickTypes::POWER_LASER:
+		_player_power=BrickTypes::POWER_LASER;
+		break;
+	case BrickTypes::POWER_EXTRA1:
+		return 1;
+		break;
+	case BrickTypes::POWER_EXTRA3:
+		return 3;
+		break;
+	case BrickTypes::POWER_BOMB:
+		Explode(p_gx,p_gy);
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+void Game::BonusSpawn(Cell* c)
+{
+	if (rand()%3==0)
+	{
+		int r=rand()%(BrickTypes::POWER_BOMB-BrickTypes::POWER_SIZE+1);
+#ifdef BONUS_DEBUG
+		r=BONUS_DEBUG;
+#endif
+		*c=BrickTypes::POWER_SIZE+r;
+	}
+}
+//>x,y in tiles
+//<brick
+Cell* Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p_destroy)
 {
 	auto& lvl=_levels.get()->at(_level_current);
-	if (p_x<0 || p_x>=kMapW || p_y<0 || p_y>=kMapH) return;
+	if (p_x<0 || p_x>=kMapW || p_y<0 || p_y>=kMapH) return nullptr;
 	Cell& c=lvl.at(p_x,p_y);
-	if (c==0) return;
+	if (c==0) return nullptr;
 	_events.push({GameEvent::Event::HIT_BRICK,c,p_x,p_y});
+	// Do nothing to power ups here.
+	if (c>=BrickTypes::POWER_SIZE) return &c;
+#if 0
 	// Power-ups.
 	if (c>=BrickTypes::POWER_SIZE)
 	{
@@ -577,11 +643,12 @@ void Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p_
 			return;
 		}
 	}
+#endif
 	// Regular bricks.
 	if (c==BrickTypes::METAL2)
 	{
 		c--;
-		return;
+		return &c;
 	}
 	if (c<=BrickTypes::METAL1 && c!=BrickTypes::SOLID)
 	{
@@ -595,19 +662,22 @@ void Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p_
 			lvl.wall_strength=0;
 			_events.push({GameEvent::Event::HIT_WALL,0,0,0});
 		}
+		/*
 		// Spawn bonus.
 		if (p_bonus)
 		{
 			if (rand()%3==0)
 			{
 				int r=rand()%(BrickTypes::POWER_BOMB-BrickTypes::POWER_SIZE+1);
-#ifdef BONUS_DEBUG
+		#ifdef BONUS_DEBUG
 				r=BONUS_DEBUG;
-#endif
+		#endif
 				c=BrickTypes::POWER_SIZE+r;
 			}
 		}
+		*/
 	}
+	return &c;
 }
 #if 0
 bool Game::Collide(Object& o)
@@ -688,7 +758,7 @@ std::optional<Game::CollisionInfo> Game::Collide(Object& o)
 	if (hit_x || hit_y)
 		return CollisionInfo{xb,yb};
 	else
- 		return std::nullopt;
+		return std::nullopt;
 }
 void Game::Explode(int p_x,int p_y)
 {

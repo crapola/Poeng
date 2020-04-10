@@ -116,9 +116,11 @@ private:
 	{
 		int x{},y{};
 	};
-	void BallGlue(Object& o);
+	void BallGlue(Object&);
 	void BallSpawn(Object);
-	void Break(int x,int y,const Object&,bool spawn_bonus=true,bool destroy_bonus=false);
+	int BonusCollect(Cell,Object& instigator,int grid_x,int grid_y);
+	void BonusSpawn(Cell*);
+	Cell* Break(int x,int y,const Object&,bool spawn_bonus=true,bool destroy_bonus=false);
 	std::optional<CollisionInfo> Collide(Object&);
 	// Break 3x3 around tile coordinates.
 	void Explode(int x,int y);
@@ -130,7 +132,7 @@ private:
 	std::queue<GameEvent> _events{};
 	std::vector<Object> _balls{}; // Active balls.
 	std::vector<Object> _balls_next{}; // Balls in reserve.
-	std::vector<Object> _balls_temp{}; // for temp operations (TODO: get rid of that)
+	//std::vector<Object> _balls_temp{}; // for temp operations (TODO: get rid of that)
 	std::unique_ptr<std::array<Level,kLevelCount>> _levels=std::make_unique<std::array<Level,kLevelCount>>();
 	std::unique_ptr<std::array<Level,kLevelCount>> _levels_copy=std::make_unique<std::array<Level,kLevelCount>>();
 	size_t _level_current{};

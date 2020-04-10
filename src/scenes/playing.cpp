@@ -54,15 +54,18 @@ void Playing::Event(EVENT_PARAMS)
 		switch (p_event.key.keysym.sym)
 		{
 		case SDLK_n:
+			if (!(p_event.key.keysym.mod&KMOD_CTRL)) return;
 			SDL_LogInfo(0,"Cheat next level.");
 			p_game.LevelSet(p_game.LevelGet()+1);
 			break;
 		case SDLK_b:
+			if (!(p_event.key.keysym.mod&KMOD_CTRL)) return;
 			SDL_LogInfo(0,"Cheat previous level.");
 			p_game.LevelSet(p_game.LevelGet()-1);
 			break;
 		case SDLK_s:
-		SDL_LogInfo(0,"Cheat spawn ball.");
+			if (!(p_event.key.keysym.mod&KMOD_CTRL)) return;
+			SDL_LogInfo(0,"Cheat spawn ball.");
 			p_game.BallSpawnCheat();
 			break;
 		case SDLK_p:
