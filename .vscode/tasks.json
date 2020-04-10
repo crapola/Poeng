@@ -22,6 +22,17 @@
         "cwd": "${workspaceFolder}"
       },
     },
+    {
+      "type": "shell",
+      "label": "buildrelease",
+      "command": "mingw32-make.exe",
+      "args": [
+        "-f","makefile_release"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+    }
   ],
   "version": "2.0.0"
 }

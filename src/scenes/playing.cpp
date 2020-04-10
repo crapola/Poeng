@@ -61,6 +61,10 @@ void Playing::Event(EVENT_PARAMS)
 			SDL_LogInfo(0,"Cheat previous level.");
 			p_game.LevelSet(p_game.LevelGet()-1);
 			break;
+		case SDLK_s:
+		SDL_LogInfo(0,"Cheat spawn ball.");
+			p_game.BallSpawnCheat();
+			break;
 		case SDLK_p:
 			_paused=!_paused;
 			SDL_SetRelativeMouseMode(_paused?SDL_FALSE:SDL_TRUE);

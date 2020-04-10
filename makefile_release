@@ -12,7 +12,7 @@ LDFLAGS=-LF:\Libraries\SDL2-2.0.10\x86_64-w64-mingw32\lib \
 # Libs to link against. Most dependant first.
 # Example: -lgdi32 -luser32 -lkernel32 -lwinmm
 LDLIBS=-lmingw32 -lSDL2main -lSDL2.dll -luser32 -lgdi32 -lwinmm -ldxguid -lsdl2 -lsdl2_mixer \
--static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic \
+#-static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic \
 -mwindows
 #-------------------------------------------------------------------------------
 src_folders=src

@@ -6,6 +6,7 @@ Game
 #include <array>
 #include <queue>
 #include <memory>
+#include <optional>
 #include <vector>
 namespace poeng
 {
@@ -92,6 +93,7 @@ public:
 	Game();
 	~Game();
 	const std::vector<Object>& Balls() const;
+	void BallSpawnCheat();
 	void Fire();
 	const Object& Laser() const;
 	const Level& LevelCurrent() const;
@@ -110,9 +112,14 @@ public:
 	void Start();
 	void Tick();
 private:
+	struct CollisionInfo
+	{
+		int x{},y{};
+	};
 	void BallGlue(Object& o);
+	void BallSpawn(Object);
 	void Break(int x,int y,const Object&,bool spawn_bonus=true,bool destroy_bonus=false);
-	bool Collide(Object&);
+	std::optional<CollisionInfo> Collide(Object&);
 	// Break 3x3 around tile coordinates.
 	void Explode(int x,int y);
 	void LaserUpdate();

@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Build and run",
+      "name": "Build and run (Debug)",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/bin/Debug/PoengSDL.exe",
@@ -24,6 +24,15 @@
         }
       ],
       "preLaunchTask": "build task"
+    },
+    {
+      "name":"Build Release",
+      "type":"cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/Release/PoengSDL.exe",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "buildrelease",
+      "miDebuggerPath": "F:\\MingW\\bin\\gdb.exe",
     }
   ]
 }
