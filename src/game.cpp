@@ -184,7 +184,6 @@ void Game::Start()
 	_score=0;
 	_balls.clear();
 	_balls_next.clear();
-	//_balls_temp.clear();
 	_balls.push_back({15,15,0.5,0.25});
 	_balls[0].glued=true;
 	std::random_shuffle(_levels->begin(),_levels->end());
@@ -203,148 +202,6 @@ void Game::Start()
 	*/
 
 }
-#if 0
-void Game::Tick()
-{
-	// Move balls.
-	for (auto it=_balls.begin(); it!=_balls.end();)
-	{
-		auto& o=*it;
-		// If glued, stick and return.
-		if (o.glued)
-		{
-			BallGlue(o);
-			++it;
-			continue;
-		}
-		// Borders.
-		if (o.y>400)
-		{
-			o.y=400;
-			o.vy=-o.vy;
-			int ox=o.x,oy=o.y;
-			_events.push({GameEvent::Event::HIT_BORDERS,0,ox,oy});
-		}
-		if (o.y<64)
-		{
-			o.y=64;
-			o.vy=-o.vy;
-			int ox=o.x,oy=o.y;
-			_events.push({GameEvent::Event::HIT_BORDERS,0,ox,oy});
-		}
-		// Wall.
-		if (_levels.get()->at(_level_current).wall_strength>0)
-		{
-			if (o.x>600)
-			{
-				o.x=600;
-				o.vx=-std::abs(o.vx);
-				_levels.get()->at(_level_current).wall_strength--;
-				_events.push({GameEvent::Event::HIT_WALL,_levels.get()->at(_level_current).wall_strength,0,0});
-			}
-		}
-		else
-		{
-			// Can go through.
-			if (o.x>622)
-			{
-				if (_balls.size()==1)
-				{
-					// It's the last one.
-					TravelForwards();
-					return;
-				}
-				else
-				{
-					// Copy it to other vector and remove it.
-					_balls_next.push_back(o);
-					it=_balls.erase(it);
-					continue;
-				}
-			}
-		}
-		// Speed cap.
-		const float speed_max=16;///4.0f;
-		o.vx=std::max(-speed_max,std::min(speed_max,o.vx));
-		o.vy=std::max(-speed_max,std::min(speed_max,o.vy));
-		/*
-		Bricks.
-		Collide() bumps one direction, so we do it 4 times per tick to prevent
-		tunnelling of trapped fast balls.
-		*/
-		Collide(o);
-		Collide(o);
-		Collide(o);
-		Collide(o);
-		// TODO: Separate collide, break, bonus collection here
-		// Move.
-		o.x+=o.vx;
-		o.y+=o.vy;
-		// Player collision.
-		if (o.x<=16)
-		{
-			auto hit=o.y+kBallSize-_player_y;
-			if (hit>0 && hit<PlayerSize()+kBallSize && !o.glued)
-			{
-				// Glue if player has that power.
-				if (_player_power==BrickTypes::POWER_GLUE)
-				{
-					o.glued=true;
-				}
-				else
-				{
-					// Bounce off player.
-					o.vx=PushImpulse(o.vx);
-					o.vy=(hit-(PlayerSize()+kBallSize)/2)/3.0f;
-					_events.push({GameEvent::HIT_BAT,0,16,0});
-				}
-				++it;
-				continue;
-			}
-		}
-		// Lost.
-		if (o.x<4)
-		{
-			// Delete this ball if there are more.
-			if (_balls.size()>1)
-			{
-				it=_balls.erase(it);
-				continue;
-			}
-			else
-			{
-				// Travel backwards.
-				if (_level_current>0)
-				{
-					TravelBackwards();
-					return;
-				}
-				else
-				{
-					// Lose a life.
-					_events.push({GameEvent::Event::LOSE,0,0,0});
-					_lives--;
-					_player_power=0;
-					_balls_next.clear();
-					BallGlue(o);
-					o.vx=4;
-					// Game over.
-					if (_lives<0)
-					{
-						_events.push({GameEvent::GAME_OVER,0,0,0});
-					}
-				}
-			}
-		}
-		++it;
-	}
-	// Add extra balls.
-	std::move(std::begin(_balls_temp), std::end(_balls_temp), std::back_inserter(_balls));
-	_balls_temp.clear();
-	// Update laser.
-	LaserUpdate();
-}
-#endif
 void Game::Tick()
 {
 	auto movement=[](Object& o)
@@ -519,12 +376,10 @@ void Game::Tick()
 	_balls.erase(std::remove_if(_balls.begin(),_balls.end(),deleteball),_balls.end());
 	// Add extra balls.
 	Object o=_balls.back();
-	for (int i=0;i<new_balls;++i)
+	for (int i=0; i<new_balls; ++i)
 	{
 		BallSpawn(o);
 	}
-	//std::move(std::begin(_balls_temp),std::end(_balls_temp),std::back_inserter(_balls));
-	//_balls_temp.clear();
 	// Update laser.
 	LaserUpdate();
 }
@@ -592,58 +447,6 @@ Cell* Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p
 	_events.push({GameEvent::Event::HIT_BRICK,c,p_x,p_y});
 	// Do nothing to power ups here.
 	if (c>=BrickTypes::POWER_SIZE) return &c;
-#if 0
-	// Power-ups.
-	if (c>=BrickTypes::POWER_SIZE)
-	{
-		if (!p_destroy)
-		{
-			_events.push({GameEvent::COLLECT_POWER,c,p_x*kBrickW,p_y*kBrickH});
-			auto newball=[&](Object o)
-			{
-				o.vx=std::abs(o.vx+(rand()%10)/10.f);
-				o.vy=std::abs(o.vy+(rand()%10)/10.f);
-				if (_balls.size()<kBallNum)
-					_balls_temp.push_back(o);
-			};
-			switch (c)
-			{
-			case BrickTypes::POWER_SIZE:
-				_player_power=BrickTypes::POWER_SIZE;
-				break;
-			case BrickTypes::POWER_GLUE:
-				_player_power=BrickTypes::POWER_GLUE;
-				break;
-			case BrickTypes::POWER_LASER:
-				_player_power=BrickTypes::POWER_LASER;
-				break;
-			case BrickTypes::POWER_EXTRA1:
-				newball(p_instigator);
-				break;
-			case BrickTypes::POWER_EXTRA3:
-				newball(p_instigator);
-				newball(p_instigator);
-				newball(p_instigator);
-				break;
-			case BrickTypes::POWER_BOMB:
-				c=0;
-				Explode(p_x,p_y);
-				break;
-			default:
-				break;
-			}
-			c=0;
-			return;
-		}
-		else
-		{
-			// Destroy bonus without getting it (laser beam).
-			// TODO: some other interactions?
-			c=0;
-			return;
-		}
-	}
-#endif
 	// Regular bricks.
 	if (c==BrickTypes::METAL2)
 	{
@@ -662,64 +465,9 @@ Cell* Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p
 			lvl.wall_strength=0;
 			_events.push({GameEvent::Event::HIT_WALL,0,0,0});
 		}
-		/*
-		// Spawn bonus.
-		if (p_bonus)
-		{
-			if (rand()%3==0)
-			{
-				int r=rand()%(BrickTypes::POWER_BOMB-BrickTypes::POWER_SIZE+1);
-		#ifdef BONUS_DEBUG
-				r=BONUS_DEBUG;
-		#endif
-				c=BrickTypes::POWER_SIZE+r;
-			}
-		}
-		*/
 	}
 	return &c;
 }
-#if 0
-bool Game::Collide(Object& o)
-{
-	auto& lvl=_levels.get()->at(_level_current);
-	const int cs=14;
-	const int corners[8]= {1,1,cs,1,1,cs,cs,cs};
-	int xb=0,yb=0;
-	bool hit_x=false,hit_y=false;
-	// Find hit in every corner.
-	for (int i=0; i<8; i+=2)
-	{
-		auto xc=corners[i];
-		auto yc=corners[i+1];
-		if (lvl.atPixels(xc+o.x+o.vx, yc+o.y)>0)
-		{
-			xb=xc+o.x+o.vx;
-			yb=yc+o.y;
-			hit_x=true;
-			break;
-		}
-		if (lvl.atPixels(xc+o.x, yc+o.y+o.vy)>0)
-		{
-			xb=xc+o.x;
-			yb=yc+o.y+o.vy;
-			hit_y=true;
-			break;
-		}
-	}
-	if (hit_x)
-	{
-		o.vx=-o.vx;
-		Break(xb/kBrickW,yb/kBrickH-2,o);
-	}
-	else if (hit_y)
-	{
-		o.vy=-o.vy;
-		Break(xb/kBrickW,yb/kBrickH-2,o);
-	}
-	return hit_x || hit_y;
-}
-#endif
 std::optional<Game::CollisionInfo> Game::Collide(Object& o)
 {
 	auto& lvl=_levels.get()->at(_level_current);

@@ -132,7 +132,6 @@ private:
 	std::queue<GameEvent> _events{};
 	std::vector<Object> _balls{}; // Active balls.
 	std::vector<Object> _balls_next{}; // Balls in reserve.
-	//std::vector<Object> _balls_temp{}; // for temp operations (TODO: get rid of that)
 	std::unique_ptr<std::array<Level,kLevelCount>> _levels=std::make_unique<std::array<Level,kLevelCount>>();
 	std::unique_ptr<std::array<Level,kLevelCount>> _levels_copy=std::make_unique<std::array<Level,kLevelCount>>();
 	size_t _level_current{};
