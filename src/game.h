@@ -120,7 +120,7 @@ private:
 	void BallSpawn(Object);
 	int BonusCollect(Cell,Object& instigator,int grid_x,int grid_y);
 	void BonusSpawn(Cell*);
-	Cell* Break(int x,int y,const Object&,bool spawn_bonus=true,bool destroy_bonus=false);
+	Cell* Break(int x,int y);
 	std::optional<CollisionInfo> Collide(Object&);
 	// Break 3x3 around tile coordinates.
 	void Explode(int x,int y);

@@ -339,7 +339,7 @@ void Game::Tick()
 			if (!ci) continue;
 			const int gx=(*ci).x/kBrickW;
 			const int gy=(*ci).y/kBrickH-2;
-			auto b=Break(gx,gy,o);
+			auto b=Break(gx,gy);
 			if (b)
 			{
 				if (*b>=BrickTypes::POWER_SIZE)
@@ -438,7 +438,7 @@ void Game::BonusSpawn(Cell* c)
 }
 //>x,y in tiles
 //<brick
-Cell* Game::Break(int p_x,int p_y,const Object& p_instigator,bool p_bonus,bool p_destroy)
+Cell* Game::Break(int p_x,int p_y)
 {
 	auto& lvl=_levels.get()->at(_level_current);
 	if (p_x<0 || p_x>=kMapW || p_y<0 || p_y>=kMapH) return nullptr;
@@ -512,10 +512,9 @@ void Game::Explode(int p_x,int p_y)
 {
 	const int first_x=p_x-1;
 	const int first_y=p_y-1;
-	const Object dummy{};
 	for (int y=first_y; y<first_y+3; ++y)
 		for (int x=first_x; x<first_x+3; ++x)
-			Break(x,y,dummy,false,true);
+			Break(x,y);
 }
 void Game::LaserUpdate()
 {
@@ -525,7 +524,10 @@ void Game::LaserUpdate()
 	auto& lvl=_levels.get()->at(_level_current);
 	if (lvl.atPixels(_laser.x,_laser.y)>0)
 	{
-		Break(_laser.x/kBrickW,_laser.y/kBrickH-2,_laser,true,true);
+		auto c=Break(_laser.x/kBrickW,_laser.y/kBrickH-2);
+		// Destroy bonus.
+		if (c && *c>=POWER_SIZE)
+			*c=0;
 		_laser.glued=false;
 	}
 	if (_laser.x>640) _laser.glued=false;
