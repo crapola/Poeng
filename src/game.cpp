@@ -3,9 +3,25 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-//#define BONUS_DEBUG 3
+//#define BONUS_DEBUG 6
 namespace poeng
 {
+int PixelToGridX(int p_x)
+{
+	return p_x/kBrickW;
+}
+int PixelToGridY(int p_y)
+{
+	return (p_y-kMapCoordY)/kBrickH;
+}
+int GridToPixelX(int p_x)
+{
+	return p_x*kBrickW;
+}
+int GridToPixelY(int p_y)
+{
+	return p_y*kBrickH+kMapCoordY;
+}
 /*
 // Load the old level file.
 void LevelsLegacyLoad(std::array<Level,32>* p_out_lvl)
@@ -188,17 +204,18 @@ void Game::Start()
 	_balls[0].glued=true;
 	std::random_shuffle(_levels->begin(),_levels->end());
 
+	//_player_power=BrickTypes::POWER_LASER;
 	//test
 	//_balls.push_back({550,150,-3.75,1.325});
 	// Test lots of balls
 	//for (int i=0; i<10; ++i) _balls.push_back({260,32,6,0.5325*i});
 	/*
-	_level_current=20;
-	for (auto& tm:*_levels)
-	{
-			std::fill(tm.tiles.begin(),tm.tiles.end(),rand()%(BrickTypes::POWER_BOMB+1) );
+		_level_current=20;
+		for (auto& tm:*_levels)
+		{
+			std::fill(tm.tiles.begin(),tm.tiles.end(),rand()%(BrickTypes::POWER_BOMB+1));
 			tm.wall_strength=500000;
-	}
+		}
 	*/
 
 }
@@ -399,7 +416,7 @@ void Game::BallSpawn(Object o)
 //<Number of new balls.
 int Game::BonusCollect(Cell p_c,Object& p_instigator,int p_gx,int p_gy)
 {
-	_events.push({GameEvent::COLLECT_POWER,p_c,p_gx*kBrickW,p_gy*kBrickH});
+	_events.push({GameEvent::COLLECT_POWER,p_c,GridToPixelX(p_gx),GridToPixelY(p_gy)});
 	switch (p_c)
 	{
 	case BrickTypes::POWER_SIZE:
@@ -508,26 +525,44 @@ std::optional<Game::CollisionInfo> Game::Collide(Object& o)
 	else
 		return std::nullopt;
 }
+//>x,y in tiles.
 void Game::Explode(int p_x,int p_y)
 {
 	const int first_x=p_x-1;
 	const int first_y=p_y-1;
 	for (int y=first_y; y<first_y+3; ++y)
 		for (int x=first_x; x<first_x+3; ++x)
-			Break(x,y);
+		{
+			auto c=Break(x,y);
+			if (c && *c>=POWER_SIZE)
+			{
+				*c=0;
+			};
+		}
 }
 void Game::LaserUpdate()
 {
 	if (!_laser.glued) return;
 	_laser.x+=_laser.vx;
 	// Collision.
-	auto& lvl=_levels.get()->at(_level_current);
+	const auto& lvl=_levels.get()->at(_level_current);
 	if (lvl.atPixels(_laser.x,_laser.y)>0)
 	{
-		auto c=Break(_laser.x/kBrickW,_laser.y/kBrickH-2);
-		// Destroy bonus.
+		const int gx=PixelToGridX(_laser.x);
+		const int gy=PixelToGridY(_laser.y);
+		auto c=Break(gx,gy);
+		// Handle bonus.
 		if (c && *c>=POWER_SIZE)
+		{
+			if (*c==POWER_BOMB)
+			{
+				const int rx=GridToPixelX(gx);
+				const int ry=GridToPixelY(gy);
+				_events.push({GameEvent::COLLECT_POWER,*c,rx,ry});
+				Explode(gx,gy);
+			}
 			*c=0;
+		}
 		_laser.glued=false;
 	}
 	if (_laser.x>640) _laser.glued=false;

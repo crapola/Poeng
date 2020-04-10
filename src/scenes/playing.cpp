@@ -342,7 +342,7 @@ void Playing::Update(UP_PARAMS)
 				const int kExplosionPixelSize=64;
 				const int ex=ge.x-kExplosionPixelSize/2+kBrickW/2;
 				const int ey=ge.y-kExplosionPixelSize/2+kBrickH/2;
-				_vfx.push_back({ex,ey+64,14,Effect::BOOM});
+				_vfx.push_back({ex,ey,14,Effect::BOOM});
 			}
 		}
 		break;
