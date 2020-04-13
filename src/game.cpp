@@ -22,6 +22,21 @@ int GridToPixelY(int p_y)
 {
 	return p_y*kBrickH+kMapCoordY;
 }
+Cell Level::at(size_t x,size_t y) const
+{
+	return tiles.at(y*40+x);
+}
+Cell& Level::at(size_t x,size_t y)
+{
+	return tiles.at(y*40+x);
+}
+Cell Level::atPixels(int x,int y) const
+{
+	int tx=PixelToGridX(x);
+	int ty=PixelToGridY(y);
+	if (tx<0 || tx>=kMapW || ty<0 || ty>=kMapH) return 0;
+	return at(tx,ty);
+}
 /*
 // Load the old level file.
 void LevelsLegacyLoad(std::array<Level,32>* p_out_lvl)
@@ -354,8 +369,8 @@ void Game::Tick()
 		{
 			auto ci=Collide(o);
 			if (!ci) continue;
-			const int gx=(*ci).x/kBrickW;
-			const int gy=(*ci).y/kBrickH-2;
+			const int gx=PixelToGridX((*ci).x);
+			const int gy=PixelToGridY((*ci).y);
 			auto b=Break(gx,gy);
 			if (b)
 			{
@@ -461,10 +476,10 @@ Cell* Game::Break(int p_x,int p_y)
 	if (p_x<0 || p_x>=kMapW || p_y<0 || p_y>=kMapH) return nullptr;
 	Cell& c=lvl.at(p_x,p_y);
 	if (c==0) return nullptr;
-	_events.push({GameEvent::Event::HIT_BRICK,c,p_x,p_y});
 	// Do nothing to power ups here.
 	if (c>=BrickTypes::POWER_SIZE) return &c;
 	// Regular bricks.
+	_events.push({GameEvent::Event::HIT_BRICK,c,p_x,p_y});
 	if (c==BrickTypes::METAL2)
 	{
 		c--;

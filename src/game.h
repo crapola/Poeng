@@ -24,6 +24,11 @@ const int kMapW=40;
 const int kMapH=11;
 // Tilemap pixel coordinates on screen.
 const int kMapCoordY=64;
+// Conversion functions.
+int PixelToGridX(int p_x);
+int PixelToGridY(int p_y);
+int GridToPixelX(int p_x);
+int GridToPixelY(int p_y);
 enum BrickTypes:uint8_t
 {
 	NONE=0,
@@ -68,21 +73,9 @@ struct Object
 };
 struct Level
 {
-	Cell at(size_t x,size_t y) const
-	{
-		return tiles.at(y*40+x);
-	}
-	Cell& at(size_t x,size_t y)
-	{
-		return tiles.at(y*40+x);
-	}
-	Cell atPixels(int x,int y) const // TODO: move conversion elsewhere.
-	{
-		int tx=x/kBrickW;
-		int ty=(y-kMapCoordY)/kBrickH;
-		if (tx<0 || tx>=kMapW || ty<0 || ty>=kMapH) return 0;
-		return at(tx,ty);
-	}
+	Cell at(size_t x,size_t y) const;
+	Cell& at(size_t x,size_t y);
+	Cell atPixels(int x,int y) const;
 	std::array<Cell,kMapW*kMapH> tiles{};
 	int bricks{};
 	int wall_strength{10};
