@@ -101,7 +101,8 @@ void GameView::LoadImages()
 					   "data/images/font.bmp",
 					   "data/images/life.bmp",
 					   "data/images/logo.bmp",
-					   "data/images/wall.bmp"//29
+					   "data/images/wall.bmp",
+						 "data/images/new/bonus_spring.bmp"//30
 				   );
 	auto loader=[](const char* str)->Bitmap
 	{

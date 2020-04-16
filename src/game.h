@@ -41,7 +41,9 @@ enum BrickTypes:uint8_t
 	POWER_LASER,
 	POWER_EXTRA1,
 	POWER_EXTRA3,
-	POWER_BOMB
+	POWER_BOMB,
+	POWER_GRAVITY,
+	END
 };
 typedef uint8_t Cell;
 struct GameEvent
@@ -69,6 +71,7 @@ struct GameEvent
 struct Object
 {
 	float x,y,vx,vy;
+	float acc_y{};
 	bool glued{false};
 };
 struct Level
@@ -115,7 +118,6 @@ private:
 	void BonusSpawn(Cell*);
 	Cell* Break(int x,int y);
 	std::optional<CollisionInfo> Collide(Object&);
-	// Break 3x3 around tile coordinates.
 	void Explode(int x,int y);
 	void LaserUpdate();
 	float PushImpulse(float vx);

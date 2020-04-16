@@ -144,7 +144,7 @@ void Game::LoadLevels(const char* p_file)
 	{
 		if (c==BrickTypes::METAL1) c=BrickTypes::METAL2;
 		// Also remove out of range stuff.
-		if (c>BrickTypes::POWER_BOMB) c=BrickTypes::NONE;
+		if (c>=BrickTypes::END) c=BrickTypes::NONE;
 		return c;
 	};
 	std::transform(file_content.begin(),file_content.end(),file_content.begin(),convertmetal);
@@ -245,6 +245,8 @@ void Game::Tick()
 		// Move.
 		o.x+=o.vx;
 		o.y+=o.vy;
+		o.vy+=o.acc_y;
+		o.acc_y=std::max(0.0f,o.acc_y-0.001f);
 	};
 	auto borders=[&](Object& o)
 	{
@@ -351,6 +353,7 @@ void Game::Tick()
 					_balls_next.clear();
 					BallGlue(o);
 					o.vx=4;
+					o.acc_y=0.0f;
 					// Game over.
 					if (_lives<0)
 					{
@@ -364,7 +367,7 @@ void Game::Tick()
 	// Return number of new balls.
 	auto bricks=[&](Object& o)->int
 	{
-		// Repeat four times.
+		// Repeat four times for four directions.
 		for (int j=0; j<4; ++j)
 		{
 			auto ci=Collide(o);
@@ -425,6 +428,7 @@ void Game::BallSpawn(Object o)
 {
 	o.vx=std::abs(o.vx+(rand()%10)/10.f);
 	o.vy=std::abs(o.vy+(rand()%10)/10.f);
+	o.acc_y+=(5-rand()%10)/10.f;
 	if (_balls.size()<kBallNum)
 		_balls.push_back(o);
 }
@@ -452,6 +456,9 @@ int Game::BonusCollect(Cell p_c,Object& p_instigator,int p_gx,int p_gy)
 	case BrickTypes::POWER_BOMB:
 		Explode(p_gx,p_gy);
 		break;
+	case BrickTypes::POWER_GRAVITY:
+		p_instigator.acc_y=1.0f;
+		break;
 	default:
 		break;
 	}
@@ -461,7 +468,7 @@ void Game::BonusSpawn(Cell* c)
 {
 	if (rand()%3==0)
 	{
-		int r=rand()%(BrickTypes::POWER_BOMB-BrickTypes::POWER_SIZE+1);
+		int r=rand()%(BrickTypes::END-BrickTypes::POWER_SIZE);
 #ifdef BONUS_DEBUG
 		r=BONUS_DEBUG;
 #endif

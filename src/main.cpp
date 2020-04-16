@@ -6,11 +6,11 @@
 #include "window.h"
 int main(int, char**) try
 {
-	std::cout << "Poeng v2\n";
+	SDL_Log("Poeng v2");
 #ifdef NDEBUG
-	std::cout << "Release build.\n";
+	SDL_Log("Release build.");
 #else
-	std::cout << "Debug build.\n";
+	SDL_Log("Debug build.");
 #endif
 	Window window("Poeng", 640, 480, SDL_WINDOW_RESIZABLE);
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);

@@ -162,6 +162,7 @@ void Playing::Render(RENDER_PARAMS)
 			{
 				size_t tex=9+b-BrickTypes::POWER_SIZE;
 				if (b==BrickTypes::POWER_BOMB) tex+=(_timer%4)/2;
+				if (b==BrickTypes::POWER_GRAVITY) tex=30;
 				p_tex[tex].Draw(px,py);
 				continue;
 			}
@@ -328,7 +329,7 @@ void Playing::Update(UP_PARAMS)
 			// 13 > 9 laser
 			// 14,15 > x
 			// 16 > 3 boom
-			std::array<int,6> smap({7,-1,9,-1,-1,3});
+			std::array<int,7> smap({7,-1,9,-1,-1,3,-1});
 			int sound=smap.at(ge.value-11);
 			if (sound>=0)
 			{
