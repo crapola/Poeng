@@ -36,7 +36,7 @@ private:
 	// Scenes.
 	Title _title{};
 	Playing _playing{};
-	std::array<Scene*,3> _scenes{&_title,&_playing,nullptr};
+	std::array<Scene*,2> _scenes{&_title,&_playing};
 	size_t _scene_current{};
 	//Uint32 _user_event{};
 };

@@ -89,6 +89,7 @@ int main(int, char**) try
 			game_view.Render(renderer);
 			SDL_RenderPresent(renderer);
 		}
+		//SDL_Delay(8);
 		SDL_Delay(15);
 	}
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Exit.");
