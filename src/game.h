@@ -24,6 +24,8 @@ const int kMapW=40;
 const int kMapH=11;
 // Tilemap pixel coordinates on screen.
 const int kMapCoordY=64;
+// How many levels can be travelled backwards before losing.
+const int kRecaptureLimit=3;
 // Conversion functions.
 int PixelToGridX(int p_x);
 int PixelToGridY(int p_y);
@@ -130,6 +132,7 @@ private:
 	std::unique_ptr<std::array<Level,kLevelCount>> _levels=std::make_unique<std::array<Level,kLevelCount>>();
 	std::unique_ptr<std::array<Level,kLevelCount>> _levels_copy=std::make_unique<std::array<Level,kLevelCount>>();
 	size_t _level_current{};
+	int _recapture{};
 	int _player_y{kMapCoordY};
 	uint8_t _player_power{};
 	int _player_push{};

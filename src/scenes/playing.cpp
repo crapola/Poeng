@@ -310,9 +310,9 @@ void Playing::Update(UP_PARAMS)
 		break;
 		case GameEvent::Event::HIT_WALL:
 		{
-			int sound=ge.value>0?11:10;
 			_wall_x=600;
-			p_audio.Play(1,sound,600);
+			// Play hit or break sound.
+			p_audio.Play(1,ge.value>0?11:10,600);
 		}
 		break;
 		case GameEvent::Event::HIT_BAT:
@@ -325,12 +325,13 @@ void Playing::Update(UP_PARAMS)
 		{
 			// Play sound.
 			// 11 > 7 broad
-			// 12 > x
+			// 12 > x glue
 			// 13 > 9 laser
-			// 14,15 > x
+			// 14,15 > x extra balls
 			// 16 > 3 boom
-			std::array<int,7> smap({7,-1,9,-1,-1,3,-1});
-			int sound=smap.at(ge.value-11);
+			// 17 > x gravity
+			std::array<int,7> sound_lut({7,-1,9,-1,-1,3,-1});
+			int sound=sound_lut.at(ge.value-11);
 			if (sound>=0)
 			{
 				int pan=(sound==7||sound==9)?16:ge.x;

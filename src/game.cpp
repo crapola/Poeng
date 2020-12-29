@@ -209,6 +209,7 @@ void Game::Start()
 {
 	LevelsReset();
 	_level_current=0;
+	_recapture=0;
 	_lives=3;
 	_player_power=0;
 	_laser.glued=false;
@@ -278,6 +279,7 @@ void Game::Tick()
 			auto hit=o.y+kBallSize-_player_y;
 			if (hit>0 && hit<PlayerSize()+kBallSize && !o.glued)
 			{
+				_events.push({GameEvent::HIT_BAT,0,16,0});
 				// Glue if player has that power.
 				if (_player_power==BrickTypes::POWER_GLUE)
 				{
@@ -334,12 +336,13 @@ void Game::Tick()
 			// Delete this ball if there are more.
 			if (ball_count>1)
 			{
+				// Play sound...
 				return 1;
 			}
 			else
 			{
 				// Travel backwards.
-				if (_level_current>0)
+				if (_level_current>0 && _recapture<kRecaptureLimit)
 				{
 					TravelBackwards();
 					return 0;
@@ -596,6 +599,7 @@ float Game::PushImpulse(float p_vx)
 }
 void Game::TravelBackwards()
 {
+	// Ball.
 	auto& o=_balls[0];
 	o.x=620;
 	o.vx=-16;// Was -8
@@ -603,6 +607,8 @@ void Game::TravelBackwards()
 	int penalty=100+_level_current*10;
 	_score=std::max(penalty,_score-penalty);
 	LevelSet(--_level_current);
+	_recapture++;
+	// Lose balls that were passed.
 	_balls_next.clear();
 }
 void Game::TravelForwards()
@@ -617,6 +623,7 @@ void Game::TravelForwards()
 		b.x=17;
 	}
 	LevelSet(++_level_current);
+	_recapture=0;
 }
 void Game::Win()
 {
