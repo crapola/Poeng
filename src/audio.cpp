@@ -56,10 +56,8 @@ bool Audio::Load()
 }
 void Audio::Play(size_t p_sample,int p_pan)
 {
-	static int chan=0;
 	int pos=((p_pan*180)/640 + 360-90)%360;
-	chan=(chan+1)%8;
+	int chan=Mix_PlayChannel(-1,_chunks.at(p_sample),0);
 	Mix_SetPosition(chan,pos,0);
-	Mix_PlayChannel(chan,_chunks.at(p_sample),0);
 }
 }
