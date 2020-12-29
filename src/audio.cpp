@@ -54,10 +54,12 @@ bool Audio::Load()
 	}
 	return true;
 }
-void Audio::Play(int p_channel,size_t p_sample,int p_pan)
+void Audio::Play(size_t p_sample,int p_pan)
 {
+	static int chan=0;
 	int pos=((p_pan*180)/640 + 360-90)%360;
-	Mix_SetPosition(p_channel,pos,0);
-	Mix_PlayChannel(p_channel,_chunks.at(p_sample),0);
+	chan=(chan+1)%8;
+	Mix_SetPosition(chan,pos,0);
+	Mix_PlayChannel(chan,_chunks.at(p_sample),0);
 }
 }

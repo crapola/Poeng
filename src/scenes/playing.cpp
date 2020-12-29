@@ -296,30 +296,30 @@ void Playing::Update(UP_PARAMS)
 			{
 				if (ge.value==BrickTypes::METAL2)
 				{
-					_vfx.push_back({ge.x*kBrickW, ge.y*kBrickH+64,6,Effect::METAL});
+					_vfx.push_back({ge.x*kBrickW, ge.y*kBrickH+kMapCoordY,6,Effect::METAL});
 					sound=5;
 				}
 				else
 				{
-					_vfx.push_back({ge.x*kBrickW, ge.y*kBrickH+64,3,Effect::BLINK});
+					_vfx.push_back({ge.x*kBrickW, ge.y*kBrickH+kMapCoordY,3,Effect::BLINK});
 					sound=4;
 				}
 			}
-			p_audio.Play(0,sound,ge.x*kBrickW);
+			p_audio.Play(sound,ge.x*kBrickW);
 		}
 		break;
 		case GameEvent::Event::HIT_WALL:
 		{
 			_wall_x=600;
 			// Play hit or break sound.
-			p_audio.Play(1,ge.value>0?11:10,600);
+			p_audio.Play(ge.value>0?11:10,600);
 		}
 		break;
 		case GameEvent::Event::HIT_BAT:
-			p_audio.Play(1,1,16);
+			p_audio.Play(1,16);
 			break;
 		case GameEvent::Event::HIT_BORDERS:
-			p_audio.Play(0,2,ge.x);
+			p_audio.Play(2,ge.x);
 			break;
 		case GameEvent::Event::COLLECT_POWER:
 		{
@@ -335,8 +335,7 @@ void Playing::Update(UP_PARAMS)
 			if (sound>=0)
 			{
 				int pan=(sound==7||sound==9)?16:ge.x;
-				int chan=(sound==3)?2:1;
-				p_audio.Play(chan,sound,pan);
+				p_audio.Play(sound,pan);
 			}
 			// Explosion.
 			if (ge.value==16)
@@ -349,10 +348,10 @@ void Playing::Update(UP_PARAMS)
 		}
 		break;
 		case GameEvent::Event::LASER_SHOOT:
-			p_audio.Play(2,8,16);
+			p_audio.Play(8,16);
 			break;
 		case GameEvent::Event::LOSE:
-			p_audio.Play(2,10,16);
+			p_audio.Play(10,16);
 			_mouse_button=false;
 			break;
 		case GameEvent::Event::GAME_OVER:

@@ -17,7 +17,7 @@ public:
 	Audio(Audio&&)=delete;
 	bool Load();
 	//>panning in range [0,640] for left ro right.
-	void Play(int channel,size_t sample,int panning);
+	void Play(size_t sample,int panning);
 private:
 	std::vector<Mix_Chunk*> _chunks{};
 };
