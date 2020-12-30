@@ -20,6 +20,7 @@ constexpr const char* kSoundFiles[]=
 	"data/sounds/new/lostball.wav",
 	"data/sounds/new/multiball.wav",
 	"data/sounds/new/powerglue.wav",
+	"data/sounds/new/spring.wav", // 15
 };
 Audio::Audio()
 {

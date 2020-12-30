@@ -329,14 +329,11 @@ void Playing::Update(UP_PARAMS)
 			// 13 > 9 laser
 			// 14,15 > 13 extra balls
 			// 16 > 3 boom
-			// 17 > x gravity
-			std::array<int,7> sound_lut({7,14,9,13,13,3,-1});
+			// 17 > 15 gravity
+			std::array<int,7> sound_lut({7,14,9,13,13,3,15});
 			const int sound=sound_lut.at(ge.value-11);
-			if (sound>=0)
-			{
-				const int pan=(sound==7||sound==9||sound==14)?16:ge.x;
-				p_audio.Play(sound,pan);
-			}
+			const int pan=(sound==7||sound==9||sound==14)?16:ge.x;
+			p_audio.Play(sound,pan);
 			// Explosion.
 			if (ge.value==16)
 			{
