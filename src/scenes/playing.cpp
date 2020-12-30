@@ -325,16 +325,16 @@ void Playing::Update(UP_PARAMS)
 		{
 			// Play sound.
 			// 11 > 7 broad
-			// 12 > x glue
+			// 12 > 14 glue
 			// 13 > 9 laser
-			// 14,15 > x extra balls
+			// 14,15 > 13 extra balls
 			// 16 > 3 boom
 			// 17 > x gravity
-			std::array<int,7> sound_lut({7,-1,9,-1,-1,3,-1});
-			int sound=sound_lut.at(ge.value-11);
+			std::array<int,7> sound_lut({7,14,9,13,13,3,-1});
+			const int sound=sound_lut.at(ge.value-11);
 			if (sound>=0)
 			{
-				int pan=(sound==7||sound==9)?16:ge.x;
+				const int pan=(sound==7||sound==9||sound==14)?16:ge.x;
 				p_audio.Play(sound,pan);
 			}
 			// Explosion.
@@ -366,6 +366,9 @@ void Playing::Update(UP_PARAMS)
 		break;
 		case GameEvent::Event::WIN:
 			_win=true;
+			break;
+		case GameEvent::Event::LOSE_ONE_BALL:
+			p_audio.Play(12,0);
 			break;
 		default:
 			break;

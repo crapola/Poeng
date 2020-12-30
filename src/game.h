@@ -61,7 +61,8 @@ struct GameEvent
 		LASER_SHOOT,
 		LOSE,
 		GAME_OVER,
-		WIN
+		WIN,
+		LOSE_ONE_BALL
 	};
 	Event event{NONE};
 	int value{},x{},y{};

@@ -333,10 +333,10 @@ void Game::Tick()
 	{
 		if (o.x<=4)
 		{
+			_events.push({GameEvent::Event::LOSE_ONE_BALL,0,0,0});
 			// Delete this ball if there are more.
 			if (ball_count>1)
 			{
-				// Play sound...
 				return 1;
 			}
 			else

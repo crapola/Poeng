@@ -17,6 +17,9 @@ constexpr const char* kSoundFiles[]=
 	"data/sounds/lazerbonus.wav",
 	"data/sounds/wallbreak.wav", // 10
 	"data/sounds/wallhit.wav",
+	"data/sounds/new/lostball.wav",
+	"data/sounds/new/multiball.wav",
+	"data/sounds/new/powerglue.wav",
 };
 Audio::Audio()
 {
