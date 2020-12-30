@@ -247,22 +247,23 @@ void Game::Tick()
 		o.x+=o.vx;
 		o.y+=o.vy;
 		o.vy+=o.acc_y;
-		o.acc_y=std::max(0.0f,o.acc_y-0.001f);
+		o.acc_y=std::max(0.0f,o.acc_y-0.0005f);
 	};
 	auto borders=[&](Object& o)
 	{
-		if (o.y>400)
+		const int border=kMapCoordY+kBrickH*kMapH-kBallSize;
+		if (o.y>border)
 		{
-			o.y=400;
+			o.y=border;
 			o.vy=-o.vy;
-			int ox=o.x,oy=o.y;
+			const int ox=o.x,oy=o.y; // floats to ints.
 			_events.push({GameEvent::Event::HIT_BORDERS,0,ox,oy});
 		}
-		if (o.y<64)
+		if (o.y<kMapCoordY)
 		{
-			o.y=64;
+			o.y=kMapCoordY;
 			o.vy=-o.vy;
-			int ox=o.x,oy=o.y;
+			const int ox=o.x,oy=o.y;
 			_events.push({GameEvent::Event::HIT_BORDERS,0,ox,oy});
 		}
 	};
@@ -274,9 +275,9 @@ void Game::Tick()
 			BallGlue(o);
 			return;
 		}
-		if (o.x<=16)
+		if (o.x<=16 && o.vx<0)
 		{
-			auto hit=o.y+kBallSize-_player_y;
+			const auto hit=o.y+kBallSize-_player_y;
 			if (hit>0 && hit<PlayerSize()+kBallSize && !o.glued)
 			{
 				_events.push({GameEvent::HIT_BAT,0,16,0});
@@ -291,7 +292,7 @@ void Game::Tick()
 					o.x=std::max(5.0f,o.x);
 					o.vx=PushImpulse(o.vx);
 					o.vy=(hit-(PlayerSize()+kBallSize)/2)/3.0f;
-					_events.push({GameEvent::HIT_BAT,0,16,0});
+					//_events.push({GameEvent::HIT_BAT,0,16,0});
 				}
 			}
 		}
@@ -373,7 +374,7 @@ void Game::Tick()
 		// Repeat four times for four directions.
 		for (int j=0; j<4; ++j)
 		{
-			auto ci=Collide(o);
+			const auto ci=Collide(o);
 			if (!ci) continue;
 			const int gx=PixelToGridX((*ci).x);
 			const int gy=PixelToGridY((*ci).y);
@@ -382,7 +383,7 @@ void Game::Tick()
 			{
 				if (*b>=BrickTypes::POWER_SIZE)
 				{
-					int new_balls=BonusCollect(*b,o,gx,gy);
+					const int new_balls=BonusCollect(*b,o,gx,gy);
 					*b=0;
 					return new_balls;
 				}
