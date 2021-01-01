@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
-//#define BONUS_DEBUG 6
+//#define BONUS_DEBUG 5
 namespace poeng
 {
 int PixelToGridX(int p_x)
@@ -98,9 +98,13 @@ void Game::Fire()
 		_events.push({GameEvent::LASER_SHOOT,0,0,0});
 	}
 }
-void Game::BallSpawnCheat()
+void Game::CheatBallSpawn()
 {
 	BallSpawn(_balls[0]);
+}
+void Game::CheatPower(BrickTypes p_pow)
+{
+	_player_power=p_pow;
 }
 const Object& Game::Laser() const
 {
@@ -470,7 +474,7 @@ int Game::BonusCollect(Cell p_c,Object& p_instigator,int p_gx,int p_gy)
 }
 void Game::BonusSpawn(Cell* c)
 {
-	if (rand()%3==0)
+	if (rand()%kBonusRarity==0)
 	{
 		int r=rand()%(BrickTypes::END-BrickTypes::POWER_SIZE);
 #ifdef BONUS_DEBUG
@@ -479,15 +483,18 @@ void Game::BonusSpawn(Cell* c)
 		*c=BrickTypes::POWER_SIZE+r;
 	}
 }
-//>x,y in tiles
-//<brick
+// Break regular brick.
+// > x,y in grid.
+// < Pointer to brick.
 Cell* Game::Break(int p_x,int p_y)
 {
 	auto& lvl=_levels.get()->at(_level_current);
+	// Ignore out of bounds.
 	if (p_x<0 || p_x>=kMapW || p_y<0 || p_y>=kMapH) return nullptr;
 	Cell& c=lvl.at(p_x,p_y);
+	// Ignore empty.
 	if (c==0) return nullptr;
-	// Do nothing to power ups here.
+	// Ignore power-ups.
 	if (c>=BrickTypes::POWER_SIZE) return &c;
 	// Regular bricks.
 	_events.push({GameEvent::Event::HIT_BRICK,c,p_x,p_y});
@@ -562,6 +569,19 @@ void Game::Explode(int p_x,int p_y)
 			auto c=Break(x,y);
 			if (c && *c>=POWER_SIZE)
 			{
+				if (*c!=POWER_BOMB)
+				{
+					const int rx=GridToPixelX(p_x);
+					const int ry=GridToPixelY(p_y);
+					_events.push({GameEvent::DESTROY_POWER,*c,rx,ry});				
+				}
+				/*
+				else
+				{
+					*c=0;
+					Explode(x,y);
+				}
+				*/				
 				*c=0;
 			};
 		}
@@ -580,14 +600,19 @@ void Game::LaserUpdate()
 		// Handle bonus.
 		if (c && *c>=POWER_SIZE)
 		{
+			const int rx=GridToPixelX(gx);
+			const int ry=GridToPixelY(gy);
 			if (*c==POWER_BOMB)
 			{
-				const int rx=GridToPixelX(gx);
-				const int ry=GridToPixelY(gy);
+				
 				_events.push({GameEvent::COLLECT_POWER,*c,rx,ry});
 				Explode(gx,gy);
 			}
-			*c=0;
+			else
+			{
+				_events.push({GameEvent::DESTROY_POWER,*c,rx,ry});
+				*c=0;
+			}
 		}
 		_laser.glued=false;
 	}

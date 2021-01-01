@@ -26,6 +26,8 @@ const int kMapH=11;
 const int kMapCoordY=64;
 // How many levels can be travelled backwards before losing.
 const int kRecaptureLimit=3;
+// Bonus rarity.
+const int kBonusRarity=3;
 // Conversion functions.
 int PixelToGridX(int p_x);
 int PixelToGridY(int p_y);
@@ -57,12 +59,13 @@ struct GameEvent
 		HIT_WALL,
 		HIT_BAT,
 		HIT_BORDERS,
-		COLLECT_POWER,
+		COLLECT_POWER, // value=BrickType x,y=pixel position
 		LASER_SHOOT,
 		LOSE,
 		GAME_OVER,
 		WIN,
-		LOSE_ONE_BALL
+		LOSE_ONE_BALL,
+		DESTROY_POWER, // value=BrickType x,y=pixel position
 	};
 	Event event{NONE};
 	int value{},x{},y{};
@@ -92,7 +95,8 @@ public:
 	Game();
 	~Game();
 	const std::vector<Object>& Balls() const;
-	void BallSpawnCheat();
+	void CheatBallSpawn();
+	void CheatPower(BrickTypes pow);
 	void Fire();
 	const Object& Laser() const;
 	const Level& LevelCurrent() const;

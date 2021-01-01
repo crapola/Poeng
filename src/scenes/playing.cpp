@@ -53,6 +53,11 @@ void Playing::Event(EVENT_PARAMS)
 	case SDL_KEYUP:
 		switch (p_event.key.keysym.sym)
 		{
+		case SDLK_l:
+			if (!(p_event.key.keysym.mod&KMOD_CTRL)) return;
+			SDL_LogInfo(0,"Cheat laser.");
+			p_game.CheatPower(BrickTypes::POWER_LASER);
+			break;
 		case SDLK_n:
 			if (!(p_event.key.keysym.mod&KMOD_CTRL)) return;
 			SDL_LogInfo(0,"Cheat next level.");
@@ -66,7 +71,7 @@ void Playing::Event(EVENT_PARAMS)
 		case SDLK_s:
 			if (!(p_event.key.keysym.mod&KMOD_CTRL)) return;
 			SDL_LogInfo(0,"Cheat spawn ball.");
-			p_game.BallSpawnCheat();
+			p_game.CheatBallSpawn();
 			break;
 		case SDLK_p:
 			_paused=!_paused;
@@ -366,6 +371,9 @@ void Playing::Update(UP_PARAMS)
 			break;
 		case GameEvent::Event::LOSE_ONE_BALL:
 			p_audio.Play(12,0);
+			break;
+		case GameEvent::Event::DESTROY_POWER:
+			p_audio.Play(16,ge.x);
 			break;
 		default:
 			break;

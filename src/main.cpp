@@ -6,7 +6,7 @@
 #include "window.h"
 int main(int, char**) try
 {
-	SDL_Log("Poeng v2");
+	SDL_Log("Poeng v2.");
 #ifdef NDEBUG
 	SDL_Log("Release build.");
 #else
