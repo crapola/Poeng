@@ -321,7 +321,7 @@ void Playing::Update(UP_PARAMS)
 		}
 		break;
 		case GameEvent::Event::HIT_BAT:
-			p_audio.Play(1,16);
+			p_audio.Play(p_game.PlayerPower()==BrickTypes::POWER_GLUE?17:1,16);
 			break;
 		case GameEvent::Event::HIT_BORDERS:
 			p_audio.Play(2,ge.x);

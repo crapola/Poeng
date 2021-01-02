@@ -573,7 +573,7 @@ void Game::Explode(int p_x,int p_y)
 				{
 					const int rx=GridToPixelX(p_x);
 					const int ry=GridToPixelY(p_y);
-					_events.push({GameEvent::DESTROY_POWER,*c,rx,ry});				
+					_events.push({GameEvent::DESTROY_POWER,*c,rx,ry});
 				}
 				/*
 				else
@@ -581,7 +581,7 @@ void Game::Explode(int p_x,int p_y)
 					*c=0;
 					Explode(x,y);
 				}
-				*/				
+				*/
 				*c=0;
 			};
 		}
@@ -604,7 +604,7 @@ void Game::LaserUpdate()
 			const int ry=GridToPixelY(gy);
 			if (*c==POWER_BOMB)
 			{
-				
+
 				_events.push({GameEvent::COLLECT_POWER,*c,rx,ry});
 				Explode(gx,gy);
 			}
@@ -654,8 +654,8 @@ void Game::TravelForwards()
 void Game::Win()
 {
 	_events.push({GameEvent::WIN,0,0,0});
-	auto score=_score;
-	auto li=_lives;
+	const auto score=_score;
+	const auto li=_lives;
 	Start();
 	_score=score+10000;
 	_lives=li+1;

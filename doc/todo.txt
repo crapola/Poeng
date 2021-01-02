@@ -1,5 +1,1 @@
-- Add missing sounds:
- - Collect glue, extra balls, gravity
- - Glue to bat
- - Lose a ball
 - Better timing.
