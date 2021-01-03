@@ -39,13 +39,9 @@ Audio::Audio()
 }
 Audio::~Audio()
 {
-	for (Mix_Chunk* c:_chunks)
-	{
-		Mix_FreeChunk(c);
-	}
 	Mix_CloseAudio();
 }
-bool Audio::Load()
+void Audio::Load()
 {
 	for (auto& s:kSoundFiles)
 	{
@@ -53,17 +49,22 @@ bool Audio::Load()
 		sample=Mix_LoadWAV(s);
 		if (!sample)
 		{
-			SDL_LogError(0,"Failed to load %s. Mix_LoadWAV: %s\n",s,Mix_GetError());
+			std::string msg("Failed to load ");
+			msg+=s;
+			msg+=". Mix_LoadWAV: ";
+			msg+=Mix_GetError();
+			msg+='\n';
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,msg.c_str());
+			throw std::runtime_error(msg);
 			continue;
 		}
-		_chunks.push_back(sample);
+		_chunks.push_back(Mix_Chunk_Ptr(sample,Mix_FreeChunk));
 	}
-	return true;
 }
 void Audio::Play(size_t p_sample,int p_pan)
 {
 	int pos=((p_pan*180)/640 + 360-90)%360;
-	int chan=Mix_PlayChannel(-1,_chunks.at(p_sample),0);
+	int chan=Mix_PlayChannel(-1,_chunks.at(p_sample).get(),0);
 	Mix_SetPosition(chan,pos,0);
 }
 }
