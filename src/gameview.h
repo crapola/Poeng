@@ -11,6 +11,7 @@
 #include "font.h"
 #include "game.h"
 #include "texture.h"
+#include "scenes/editor.h"
 #include "scenes/playing.h"
 #include "scenes/title.h"
 namespace poeng
@@ -23,7 +24,7 @@ public:
 	void AudioInit();
 	void CreateTextures(SDL_Renderer*);
 	void FontInit();
-	bool Event(const SDL_Event& event);
+	bool Event(const SDL_Event& event,int mx,int my);
 	void LoadImages();
 	void Render(SDL_Renderer* renderer);
 	void Update();
@@ -36,8 +37,8 @@ private:
 	// Scenes.
 	Title _title{};
 	Playing _playing{};
-	std::array<Scene*,2> _scenes{&_title,&_playing};
+	Editor _editor{};
+	std::array<Scene*,3> _scenes{&_title,&_playing,&_editor};
 	size_t _scene_current{};
-	//Uint32 _user_event{};
 };
 }

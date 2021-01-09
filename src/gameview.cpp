@@ -44,7 +44,7 @@ void GameView::FontInit()
 {
 	_font.TextureSet(&_textures[26]);
 }
-bool GameView::Event(const SDL_Event& p_event)
+bool GameView::Event(const SDL_Event& p_event,int p_mx,int p_my)
 {
 	switch (p_event.type)
 	{
@@ -54,10 +54,10 @@ bool GameView::Event(const SDL_Event& p_event)
 	/*case SDL_USEREVENT+1:
 		std::cout<<"UserEvent 1 "<<p_event.user.code;
 		break;*/
-	case MyEvents::EXIT:
+	case MySdlEvents::EXIT:
 		return false;
 		break;
-	case MyEvents::SCENE_SWITCH:
+	case MySdlEvents::SCENE_SWITCH:
 		_scenes.at(_scene_current)->Exit();
 		_scene_current=p_event.user.code;
 		_scenes.at(_scene_current)->Enter(_game);
@@ -65,7 +65,7 @@ bool GameView::Event(const SDL_Event& p_event)
 	default:
 		break;
 	}
-	_scenes[_scene_current]->Event(p_event,_game);
+	_scenes[_scene_current]->Event(p_event,_game,p_mx,p_my);
 	return true;
 }
 void GameView::LoadImages()

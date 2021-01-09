@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <array>
 #include <string>
+// local
+#include "drawbackground.h"
 namespace poeng
 {
 Playing::Playing()
@@ -14,6 +16,7 @@ Playing::~Playing()
 void Playing::Enter(ENTER_PARAMS)
 {
 	p_game.Start();
+	p_game.LevelsShuffle();
 	_vfx.clear();
 	// Capture pointer inside window.
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -46,9 +49,11 @@ void Playing::Event(EVENT_PARAMS)
 		break;
 	case SDL_MOUSEMOTION:
 		//_mouse_x=p_event.motion.xrel; Updates too fast.
-		_mouse_x=p_event.motion.x;
-		_mouse_y=p_event.motion.y;
+		//_mouse_x=p_event.motion.x;
+		//_mouse_y=p_event.motion.y;
 		//SDL_Log("mouse %d,%d",_mouse_x,_mouse_y);
+		_mouse_x=p_mx;
+		_mouse_y=p_my;
 		break;
 	case SDL_KEYUP:
 		switch (p_event.key.keysym.sym)
@@ -111,9 +116,11 @@ void Playing::Render(RENDER_PARAMS)
 	// Clear.
 	SDL_SetRenderDrawColor(p_renderer,0,0,0,255);
 	SDL_RenderClear(p_renderer);
+	/*
 	// Stage number.
 	std::string str_stage("STAGE "+std::to_string(p_game.LevelGet()+1));
 	p_font.Draw(str_stage.c_str(),300,450);
+	*/
 	// Score.
 	std::string str_score("SCORE "+std::to_string(p_game.Score()));
 	p_font.Draw(str_score.c_str(),16,8);
@@ -129,6 +136,7 @@ void Playing::Render(RENDER_PARAMS)
 	{
 		p_tex[27].Draw(16+i*5,18);
 	}
+	/*
 	// Draw background.
 	{
 		const int kBackgroundTop=64;
@@ -187,6 +195,8 @@ void Playing::Render(RENDER_PARAMS)
 		p_tex[16].Draw(x*32,kBorderTop,r*32,0,32,32);
 		p_tex[16].Draw(x*32,kBorderBottom,r*32,32,32,32);
 	}
+	*/
+	DrawBackground(p_renderer,p_tex,p_font,p_game,_rng);
 	// Player.
 	{
 		size_t tx=4;
@@ -212,6 +222,7 @@ void Playing::Render(RENDER_PARAMS)
 		p_tex[1].Draw(o.x,o.y);
 	};
 	std::for_each(balls.begin(),balls.end(),draw_ball);
+	auto lvl=p_game.LevelCurrent();
 	// Wall.
 	if (lvl.wall_strength>0)
 	{
@@ -284,7 +295,7 @@ void Playing::Render(RENDER_PARAMS)
 void Playing::Update(UP_PARAMS)
 {
 	if (_paused || _win) return;
-	++_timer;
+	//++_timer;
 	p_game.PlayerMove(_mouse_x-_mouse_x_prev,_mouse_y);
 	_mouse_x_prev=_mouse_x;
 	if (_mouse_button) p_game.Fire();

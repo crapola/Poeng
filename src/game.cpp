@@ -106,6 +106,17 @@ void Game::CheatPower(BrickTypes p_pow)
 {
 	_player_power=p_pow;
 }
+void Game::EditBrick(int p_x,int p_y,BrickTypes p_brick)
+{
+	const int x=PixelToGridX(p_x);
+	const int y=PixelToGridY(p_y);
+	// Ignore out of bounds.
+	if (x<0 || x>=kMapW || y<0 || y>=kMapH) return;
+	auto& lvl=_levels.get()->at(_level_current);
+	Cell& c=lvl.at(x,y);
+	c=p_brick;
+	_levels_copy.get()->at(_level_current).at(x,y)=p_brick;
+}
 const Object& Game::Laser() const
 {
 	return _laser;
@@ -124,13 +135,13 @@ void Game::LevelsReset()
 }
 void Game::LevelSet(size_t p_lvl)
 {
-	// Check victory.
-	if (p_lvl==kLevelCount)
-	{
-		Win();
-	}
 	_level_current=p_lvl%kLevelCount;
 }
+void Game::LevelsShuffle()
+{
+	std::random_shuffle(_levels->begin(),_levels->end());
+}
+
 int Game::Lives() const
 {
 	return _lives;
@@ -222,7 +233,7 @@ void Game::Start()
 	_balls_next.clear();
 	_balls.push_back({15,15,0.5,0.25});
 	_balls[0].glued=true;
-	std::random_shuffle(_levels->begin(),_levels->end());
+	//std::random_shuffle(_levels->begin(),_levels->end());
 
 	//_player_power=BrickTypes::POWER_LASER;
 	//test
@@ -648,8 +659,17 @@ void Game::TravelForwards()
 	{
 		b.x=17;
 	}
-	LevelSet(++_level_current);
 	_recapture=0;
+	// Check victory.
+	if (_level_current==kLevelCount-1)
+	{
+		Win();
+	}
+	else
+	{
+		LevelSet(++_level_current);
+	}
+
 }
 void Game::Win()
 {
@@ -657,6 +677,7 @@ void Game::Win()
 	const auto score=_score;
 	const auto li=_lives;
 	Start();
+	LevelsShuffle();
 	_score=score+10000;
 	_lives=li+1;
 }

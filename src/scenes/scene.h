@@ -11,14 +11,14 @@
 namespace poeng
 {
 // Give user events SDL_USEREVENT+n a more readable name.
-enum MyEvents
+enum MySdlEvents
 {
 	SCENE_SWITCH=SDL_USEREVENT,
 	EXIT
 };
-// TODO: get rid of these macros later.
+void SceneChange(int scene_id);
 #define ENTER_PARAMS Game& p_game
-#define EVENT_PARAMS const SDL_Event& p_event,Game& p_game
+#define EVENT_PARAMS const SDL_Event& p_event,Game& p_game,int p_mx,int p_my
 #define RENDER_PARAMS SDL_Renderer* p_renderer,const std::vector<Texture>& p_tex,const Font& p_font,const Game& p_game
 #define UP_PARAMS Game& p_game,Audio& p_audio
 class Scene

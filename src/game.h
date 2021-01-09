@@ -97,11 +97,13 @@ public:
 	const std::vector<Object>& Balls() const;
 	void CheatBallSpawn();
 	void CheatPower(BrickTypes pow);
+	void EditBrick(int x_pixels,int y_pixels,BrickTypes brick);
 	void Fire();
 	const Object& Laser() const;
 	const Level& LevelCurrent() const;
 	size_t LevelGet() const;
 	void LevelsReset();
+	void LevelsShuffle();
 	void LevelSet(size_t lvl);
 	int Lives() const;
 	void LoadLevels(const char* file);

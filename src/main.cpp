@@ -32,10 +32,27 @@ int main(int, char**) try
 	SDL_Event event;
 	while (running)
 	{
+		int mouse_x,mouse_y;
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type)
 			{
+			case SDL_MOUSEMOTION:
+			{
+				// Compute scaled mouse position.
+				const int x=event.motion.x;
+				const int y=event.motion.y;
+				float sx,sy;
+				SDL_RenderGetScale(renderer,&sx,&sy);
+				int w,h;
+				SDL_GetWindowSize(window,&w,&h);
+				//SDL_Log("scale %f %f, size %d %d, mouse %d %d",sx,sy,w,h,mouse_x,mouse_y);
+				const int ox=std::max(0,w-640*static_cast<int>(sx))/2;
+				const int oy=std::max(0,h-480*static_cast<int>(sy))/2;
+				mouse_x=(x-ox)/sx;
+				mouse_y=(y-oy)/sy;
+			}
+			break;
 			case SDL_QUIT:
 				running = false;
 				break;
@@ -81,7 +98,7 @@ int main(int, char**) try
 			default:
 				break;
 			}
-			running &= game_view.Event(event);
+			running &= game_view.Event(event,mouse_x,mouse_y);
 		}
 		if (!minimized)
 		{

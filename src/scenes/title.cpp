@@ -17,7 +17,7 @@ void Title::Exit()
 }
 void Title::Event(EVENT_PARAMS)
 {
-	_scores.Event(p_event,p_game);
+	_scores.Event(p_event,p_game,p_mx,p_my);
 	if (_scores.Typing()) return;
 	switch (p_event.type)
 	{
@@ -39,6 +39,15 @@ void Title::Event(EVENT_PARAMS)
 			SDL_zero(sent);
 			sent.type=EXIT;
 			sent.user.code=0;
+			SDL_PushEvent(&sent);
+		}
+		break;
+		case SDLK_e:
+		{
+			SDL_Event sent;
+			SDL_zero(sent);
+			sent.type=SCENE_SWITCH;
+			sent.user.code=2;
 			SDL_PushEvent(&sent);
 		}
 		break;
