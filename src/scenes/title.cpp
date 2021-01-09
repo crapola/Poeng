@@ -12,7 +12,7 @@ void Title::Enter(ENTER_PARAMS)
 {
 	_scores.Enter(p_game);
 }
-void Title::Exit()
+void Title::Exit(EXIT_PARAMS)
 {
 }
 void Title::Event(EVENT_PARAMS)

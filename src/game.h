@@ -102,11 +102,12 @@ public:
 	const Object& Laser() const;
 	const Level& LevelCurrent() const;
 	size_t LevelGet() const;
+	bool LevelsLoad(const char* p_path);
 	void LevelsReset();
 	void LevelsShuffle();
+	void LevelsSave(const char* path) const;
 	void LevelSet(size_t lvl);
 	int Lives() const;
-	void LoadLevels(const char* file);
 	void PlayerMove(int x,int y);
 	int PlayerPos() const;
 	uint8_t PlayerPower() const;

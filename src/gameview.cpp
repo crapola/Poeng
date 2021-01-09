@@ -9,7 +9,14 @@ namespace poeng
 GameView::GameView()
 {
 	// Load levels.
-	_game.LoadLevels("data/levels.bin");
+	if (!_game.LevelsLoad("userlevels.bin"))
+	{
+		SDL_Log("User levels not found, loading default.");
+		if (!_game.LevelsLoad("data/levels.bin"))
+		{
+			throw std::runtime_error("Levels file not found.");
+		}
+	}
 	// Register SDL user events.
 	Uint32 user_event=SDL_RegisterEvents(5);
 	if (user_event==(Uint32)-1)
@@ -58,7 +65,7 @@ bool GameView::Event(const SDL_Event& p_event,int p_mx,int p_my)
 		return false;
 		break;
 	case MySdlEvents::SCENE_SWITCH:
-		_scenes.at(_scene_current)->Exit();
+		_scenes.at(_scene_current)->Exit(_game);
 		_scene_current=p_event.user.code;
 		_scenes.at(_scene_current)->Enter(_game);
 		break;

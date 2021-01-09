@@ -16,13 +16,14 @@ Playing::~Playing()
 void Playing::Enter(ENTER_PARAMS)
 {
 	p_game.Start();
-	p_game.LevelsShuffle();
+	// TODO: uncomment
+	//p_game.LevelsShuffle();
 	_vfx.clear();
 	// Capture pointer inside window.
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	_mouse_x=_mouse_x_prev=0;
 }
-void Playing::Exit()
+void Playing::Exit(EXIT_PARAMS)
 {
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 }

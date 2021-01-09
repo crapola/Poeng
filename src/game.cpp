@@ -129,40 +129,23 @@ size_t Game::LevelGet() const
 {
 	return _level_current;
 }
-void Game::LevelsReset()
+bool Game::LevelsLoad(const char* p_path)
 {
-	*_levels=*_levels_copy;
-}
-void Game::LevelSet(size_t p_lvl)
-{
-	_level_current=p_lvl%kLevelCount;
-}
-void Game::LevelsShuffle()
-{
-	std::random_shuffle(_levels->begin(),_levels->end());
-}
-
-int Game::Lives() const
-{
-	return _lives;
-}
-void Game::LoadLevels(const char* p_file)
-{
-	std::ifstream file(p_file,std::ios::binary);
+	std::ifstream file(p_path,std::ios::binary);
 	if (!file.is_open())
 	{
-		throw std::runtime_error(std::string("Levels file not found: ")+std::string(p_file));
-		return;
+		//throw std::runtime_error(std::string("Levels file not found: ")+std::string(p_path));
+		return false;
 	}
 	std::vector<char> file_content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-	auto convertmetal=[](Cell c)
+	auto fix_values=[](Cell c)
 	{
 		if (c==BrickTypes::METAL1) c=BrickTypes::METAL2;
 		// Also remove out of range stuff.
 		if (c>=BrickTypes::END) c=BrickTypes::NONE;
 		return c;
 	};
-	std::transform(file_content.begin(),file_content.end(),file_content.begin(),convertmetal);
+	std::transform(file_content.begin(),file_content.end(),file_content.begin(),fix_values);
 	const size_t kSize=kMapW*kMapH;
 	size_t num=std::min(_levels->size(),file_content.size()/kSize);
 	//std::cout<<"There are "<<num<<" levels\n";
@@ -182,6 +165,34 @@ void Game::LoadLevels(const char* p_file)
 	}
 	// Keep copy to reset.
 	*_levels_copy=*_levels;
+	return true;
+}
+void Game::LevelsReset()
+{
+	*_levels=*_levels_copy;
+}
+void Game::LevelsSave(const char* p_path) const
+{
+	std::ofstream file(p_path,std::ios::binary);
+	if (!file.is_open())
+		return;
+	for (auto& l :*_levels_copy)
+	{
+		std::copy(l.tiles.begin(),l.tiles.end(),std::ostreambuf_iterator<char>(file));
+	}
+}
+void Game::LevelSet(size_t p_lvl)
+{
+	_level_current=p_lvl%kLevelCount;
+}
+void Game::LevelsShuffle()
+{
+	std::random_shuffle(_levels->begin(),_levels->end());
+}
+
+int Game::Lives() const
+{
+	return _lives;
 }
 void Game::PlayerMove(int p_x,int p_y)
 {

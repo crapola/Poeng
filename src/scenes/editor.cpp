@@ -11,8 +11,10 @@ void Editor::Enter(ENTER_PARAMS)
 {
 	p_game.Start();
 }
-void Editor::Exit()
-{}
+void Editor::Exit(EXIT_PARAMS)
+{
+	p_game.LevelsSave("userlevels.bin");
+}
 void Editor::Event(EVENT_PARAMS)
 {
 	switch (p_event.type)
@@ -57,9 +59,12 @@ void Editor::Event(EVENT_PARAMS)
 		_mouse_y=p_my;
 		break;
 	case SDL_MOUSEWHEEL:
+	{
 		// Assume p_event.wheel.y is 1 or -1.
-		_brick=BrickTypes((int)_brick+p_event.wheel.y);
-		break;
+		const int next=BrickTypes::END+static_cast<int>(_brick)+p_event.wheel.y;
+		_brick=BrickTypes(next%BrickTypes::END);
+	}
+	break;
 	default:
 		break;
 	}

@@ -12,7 +12,7 @@ public:
 	virtual ~Editor();
 	virtual void Enter(ENTER_PARAMS) override;
 	virtual void Event(EVENT_PARAMS) override;
-	virtual void Exit() override;
+	virtual void Exit(EXIT_PARAMS) override;
 	virtual void Render(RENDER_PARAMS) override;
 	virtual void Update(UP_PARAMS) override;
 private:

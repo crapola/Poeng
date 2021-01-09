@@ -25,7 +25,7 @@ void Scores::Enter(ENTER_PARAMS)
 		_entry_mode=true;
 	}
 }
-void Scores::Exit()
+void Scores::Exit(EXIT_PARAMS)
 {}
 void Scores::Event(EVENT_PARAMS)
 {
