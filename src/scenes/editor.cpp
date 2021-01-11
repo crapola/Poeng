@@ -1,6 +1,6 @@
 #include "editor.h"
 // local
-#include "drawbackground.h"
+#include "drawing.h"
 namespace poeng
 {
 Editor::Editor()
@@ -13,7 +13,10 @@ void Editor::Enter(ENTER_PARAMS)
 }
 void Editor::Exit(EXIT_PARAMS)
 {
+	p_game.LevelsValidate();
+#ifdef NDEBUG
 	p_game.LevelsSave("userlevels.bin");
+#endif
 }
 void Editor::Event(EVENT_PARAMS)
 {
@@ -56,13 +59,12 @@ void Editor::Event(EVENT_PARAMS)
 		break;
 	case SDL_MOUSEMOTION:
 		_mouse_x=p_mx;
-		_mouse_y=p_my;
+		_mouse_y=std::min(kMapH*kBrickH+kMapCoordY-1,std::max(kMapCoordY,p_my));
 		break;
 	case SDL_MOUSEWHEEL:
 	{
 		// Assume p_event.wheel.y is 1 or -1.
-		const int next=BrickTypes::END+static_cast<int>(_brick)+p_event.wheel.y;
-		_brick=BrickTypes(next%BrickTypes::END);
+		_selection=(kSelectionMax+_selection+p_event.wheel.y)%kSelectionMax;
 	}
 	break;
 	default:
@@ -71,15 +73,48 @@ void Editor::Event(EVENT_PARAMS)
 }
 void Editor::Render(RENDER_PARAMS)
 {
-	SDL_SetRenderDrawColor(p_renderer,0,8,16,255);
+	static uint8_t timer{};
+	timer=(timer+1)%3;
+	// Clear.
+	SDL_SetRenderDrawColor(p_renderer,32,32,32,255);
 	SDL_RenderClear(p_renderer);
+	// Title.
+	p_font.Draw("Editor",16,8);
+	// Level.
 	DrawBackground(p_renderer,p_tex,p_font,p_game,_rng);
+	// Draw ghost.
+	if (timer)
+	{
+		const int x=PixelToGridX(_mouse_x);
+		const int y=PixelToGridY(_mouse_y);
+		const Cell b=SelectionAsBrick();
+		DrawBrick(p_tex,b,x,y,timer);
+	}
+	// Draw toolbar.
+	{
+		const int tool_x{200},tool_y{1};
+		// bricks.bmp
+		p_tex[17].Draw(tool_x,tool_y,0,0,kBrickW*9,kBrickH);
+		// Power-ups.
+		for(size_t p=9;p<15;++p)
+		{
+			p_tex[p].Draw(tool_x+kBrickW*(9+(p-9)),tool_y);
+		}
+		p_tex[30].Draw(tool_x+kBrickW*(9+(15-9)),tool_y);
+		// Selection outline.
+		SDL_Rect r{tool_x+_selection*kBrickW,tool_y-1,kBrickW+1,kBrickH+1};
+		SDL_RenderDrawRect(p_renderer,&r);
+	}
 }
 void Editor::Update(UP_PARAMS)
 {
 	if (_mouse_button)
 	{
-		p_game.EditBrick(_mouse_x,_mouse_y,_mouse_button==1?_brick:BrickTypes::NONE);
+		p_game.EditBrick(_mouse_x,_mouse_y,BrickTypes(_mouse_button==1?SelectionAsBrick():0));
 	}
+}
+Cell Editor::SelectionAsBrick()
+{
+	return _selection+1+(_selection>8)+(_selection==BrickTypes::METAL1-1);
 }
 }

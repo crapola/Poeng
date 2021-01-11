@@ -156,15 +156,18 @@ bool Game::LevelsLoad(const char* p_path)
 		std::copy_n(file_it,kSize,tiles_it);
 		// Wall strength.
 		_levels->at(i).wall_strength=10+i/2;
+		/*
 		// Count breakables.
 		auto breakable=[](const Cell& c)
 		{
 			return c>BrickTypes::NONE&&c!=BrickTypes::SOLID;
 		};
 		_levels->at(i).bricks=std::count_if(_levels->at(i).tiles.begin(),_levels->at(i).tiles.end(),breakable);
+		*/
 	}
 	// Keep copy to reset.
 	*_levels_copy=*_levels;
+	LevelsValidate();
 	return true;
 }
 void Game::LevelsReset()
@@ -189,7 +192,19 @@ void Game::LevelsShuffle()
 {
 	std::random_shuffle(_levels->begin(),_levels->end());
 }
-
+void Game::LevelsValidate()
+{
+	size_t num=_levels->size();
+	for (size_t i=0; i<num; ++i)
+	{
+		// Count breakables.
+		auto breakable=[](const Cell& c)
+		{
+			return c>BrickTypes::NONE&&c!=BrickTypes::SOLID&&c<BrickTypes::POWER_SIZE;
+		};
+		_levels_copy->at(i).bricks=std::count_if(_levels_copy->at(i).tiles.begin(),_levels_copy->at(i).tiles.end(),breakable);
+	}
+}
 int Game::Lives() const
 {
 	return _lives;

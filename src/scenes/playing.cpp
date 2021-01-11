@@ -4,7 +4,7 @@
 #include <array>
 #include <string>
 // local
-#include "drawbackground.h"
+#include "drawing.h"
 namespace poeng
 {
 Playing::Playing()

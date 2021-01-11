@@ -107,6 +107,7 @@ public:
 	void LevelsShuffle();
 	void LevelsSave(const char* path) const;
 	void LevelSet(size_t lvl);
+	void LevelsValidate();
 	int Lives() const;
 	void PlayerMove(int x,int y);
 	int PlayerPos() const;

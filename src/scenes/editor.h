@@ -16,9 +16,11 @@ public:
 	virtual void Render(RENDER_PARAMS) override;
 	virtual void Update(UP_PARAMS) override;
 private:
+	Cell SelectionAsBrick();
 	std::minstd_rand _rng{};
-	int _mouse_x{},_mouse_y{};
+	int _mouse_x{320},_mouse_y{240};
 	int _mouse_button{};
-	BrickTypes _brick{BrickTypes::NONE};
+	const int kSelectionMax=BrickTypes::END-2;
+	int _selection{};
 };
 }

@@ -1,4 +1,4 @@
-#include "drawbackground.h"
+#include "drawing.h"
 namespace poeng
 {
 void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
@@ -29,26 +29,37 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
 			auto b=lvl.at(x,y);
 			if (b==0)
 				continue;
+			// Shadow.
+			if (b!=BrickTypes::POWER_BOMB)
+			{
+				const auto px=GridToPixelX(x);
+				const auto py=GridToPixelY(y);
+				SDL_Rect r{px+8,py+8,kBrickW,kBrickH};
+				SDL_RenderFillRect(p_renderer,&r);
+			}
+			DrawBrick(p_tex,b,x,y,timer);
+			/*
 			const int px=x*kBrickW;
 			const int py=64+y*kBrickH;
 			// Shadow.
 			if (b!=BrickTypes::POWER_BOMB)
 			{
-				SDL_Rect r{px+8,py+8,kBrickW,kBrickH};
-				SDL_RenderFillRect(p_renderer,&r);
+			SDL_Rect r{px+8,py+8,kBrickW,kBrickH};
+			SDL_RenderFillRect(p_renderer,&r);
 			}
 			// Brick or power-up.
 			if (b==BrickTypes::METAL2) b=9;
 			if (b>=BrickTypes::POWER_SIZE)
 			{
-				size_t tex=9+b-BrickTypes::POWER_SIZE;
-				if (b==BrickTypes::POWER_BOMB) tex+=(timer%4)/2;
-				if (b==BrickTypes::POWER_GRAVITY) tex=30;
-				p_tex[tex].Draw(px,py);
-				continue;
+			size_t tex=9+b-BrickTypes::POWER_SIZE;
+			if (b==BrickTypes::POWER_BOMB) tex+=(timer%4)/2;
+			if (b==BrickTypes::POWER_GRAVITY) tex=30;
+			p_tex[tex].Draw(px,py);
+			continue;
 			}
 			b=b-1;
 			p_tex[17].Draw(px,py, b*kBrickW,0, kBrickW,kBrickH);
+			*/
 		}
 	}
 	SDL_SetRenderDrawColor(p_renderer,255,255,255,255);
@@ -66,5 +77,23 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
 	// Stage number.
 	std::string str_stage("STAGE "+std::to_string(p_game.LevelGet()+1));
 	p_font.Draw(str_stage.c_str(),300,450);
+}
+void DrawBrick(const std::vector<Texture>& p_tex,Cell p_brick,int p_x,int p_y,uint8_t p_timer)
+{
+	const int x=GridToPixelX(p_x);
+	const int y=GridToPixelY(p_y);
+	// Brick or power-up.
+	if (p_brick>=BrickTypes::POWER_SIZE)
+	{
+		size_t tex=9+p_brick-BrickTypes::POWER_SIZE;
+		if (p_brick==BrickTypes::POWER_BOMB) tex+=(p_timer%4)/2;
+		if (p_brick==BrickTypes::POWER_GRAVITY) tex=30;
+		p_tex[tex].Draw(x,y);
+	}
+	else
+	{
+		if (p_brick==BrickTypes::METAL2) p_brick=BrickTypes::METAL1;
+		p_tex[17].Draw(x,y,(p_brick-1)*kBrickW,0,kBrickW,kBrickH);
+	}
 }
 }
