@@ -14,9 +14,9 @@ void Editor::Enter(ENTER_PARAMS)
 void Editor::Exit(EXIT_PARAMS)
 {
 	p_game.LevelsValidate();
-#ifdef NDEBUG
+//#ifdef NDEBUG
 	p_game.LevelsSave("userlevels.bin");
-#endif
+//#endif
 }
 void Editor::Event(EVENT_PARAMS)
 {
@@ -101,6 +101,8 @@ void Editor::Render(RENDER_PARAMS)
 			p_tex[p].Draw(tool_x+kBrickW*(9+(p-9)),tool_y);
 		}
 		p_tex[30].Draw(tool_x+kBrickW*(9+(15-9)),tool_y);
+		// Respawning bricks.
+		p_tex[31].Draw(tool_x+kBrickW*(9+(16-9)),tool_y,0,0,7*kBrickW,kBrickH);
 		// Selection outline.
 		SDL_Rect r{tool_x+_selection*kBrickW,tool_y-1,kBrickW+1,kBrickH+1};
 		SDL_RenderDrawRect(p_renderer,&r);

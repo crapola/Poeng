@@ -30,7 +30,7 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
 			if (b==0)
 				continue;
 			// Shadow.
-			if (b!=BrickTypes::POWER_BOMB)
+			if (b!=BrickTypes::POWER_BOMB && b<BrickTypes::RES_RED_DOWN)
 			{
 				const auto px=GridToPixelX(x);
 				const auto py=GridToPixelY(y);
@@ -82,16 +82,31 @@ void DrawBrick(const std::vector<Texture>& p_tex,Cell p_brick,int p_x,int p_y,ui
 {
 	const int x=GridToPixelX(p_x);
 	const int y=GridToPixelY(p_y);
-	// Brick or power-up.
 	if (p_brick>=BrickTypes::POWER_SIZE)
 	{
-		size_t tex=9+p_brick-BrickTypes::POWER_SIZE;
-		if (p_brick==BrickTypes::POWER_BOMB) tex+=(p_timer%4)/2;
-		if (p_brick==BrickTypes::POWER_GRAVITY) tex=30;
-		p_tex[tex].Draw(x,y);
+		if (p_brick>=BrickTypes::RES_RED)
+		{
+				if (p_brick>=BrickTypes::RES_RED_DOWN)
+				{
+					p_tex[31].Draw(x,y,(p_brick-BrickTypes::RES_RED_DOWN)*kBrickW,kBrickH,kBrickW,kBrickH);
+				}
+				else
+				{
+					p_tex[31].Draw(x,y,(p_brick-BrickTypes::RES_RED)*kBrickW,0,kBrickW,kBrickH);
+				}
+		}
+		else
+		{
+			// Power-up.
+			size_t tex=9+p_brick-BrickTypes::POWER_SIZE;
+			if (p_brick==BrickTypes::POWER_BOMB) tex+=(p_timer%4)/2;
+			if (p_brick==BrickTypes::POWER_GRAVITY) tex=30;
+			p_tex[tex].Draw(x,y);
+		}
 	}
 	else
 	{
+		// Brick from bricks.bmp.
 		if (p_brick==BrickTypes::METAL2) p_brick=BrickTypes::METAL1;
 		p_tex[17].Draw(x,y,(p_brick-1)*kBrickW,0,kBrickW,kBrickH);
 	}

@@ -33,7 +33,8 @@ int PixelToGridX(int p_x);
 int PixelToGridY(int p_y);
 int GridToPixelX(int p_x);
 int GridToPixelY(int p_y);
-enum BrickTypes:uint8_t
+typedef uint8_t Cell;
+enum BrickTypes:Cell
 {
 	NONE=0,
 	RED=1, // 1 to 7 are colored bricks.
@@ -47,9 +48,25 @@ enum BrickTypes:uint8_t
 	POWER_EXTRA3,
 	POWER_BOMB,
 	POWER_GRAVITY,
+	RES_RED,
+	RES_ORANGE,
+	RES_YELLOW,
+	RES_GREEN,
+	RES_LIGHTBLUE,
+	RES_BLUE,
+	RES_PURPLE,
+	RES_RED_DOWN,
+	RES_ORANGE_DOWN,
+	RES_YELLOW_DOWN,
+	RES_GREEN_DOWN,
+	RES_LIGHTBLUE_DOWN,
+	RES_BLUE_DOWN,
+	RES_PURPLE_DOWN,
 	END
 };
-typedef uint8_t Cell;
+const int kColoredBricksCount=BrickTypes::SOLID-BrickTypes::RED;
+bool BrickIsCollidable(Cell);
+bool BrickIsPower(Cell);
 struct GameEvent
 {
 	enum Event
@@ -128,6 +145,7 @@ private:
 	int BonusCollect(Cell,Object& instigator,int grid_x,int grid_y);
 	void BonusSpawn(Cell*);
 	Cell* Break(int x,int y);
+	int BricksCount(Cell type);
 	std::optional<CollisionInfo> Collide(Object&);
 	void Explode(int x,int y);
 	void LaserUpdate();

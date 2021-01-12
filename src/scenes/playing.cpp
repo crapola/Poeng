@@ -117,11 +117,6 @@ void Playing::Render(RENDER_PARAMS)
 	// Clear.
 	SDL_SetRenderDrawColor(p_renderer,0,0,0,255);
 	SDL_RenderClear(p_renderer);
-	/*
-	// Stage number.
-	std::string str_stage("STAGE "+std::to_string(p_game.LevelGet()+1));
-	p_font.Draw(str_stage.c_str(),300,450);
-	*/
 	// Score.
 	std::string str_score("SCORE "+std::to_string(p_game.Score()));
 	p_font.Draw(str_score.c_str(),16,8);

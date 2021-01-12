@@ -68,6 +68,7 @@ void Title::Render(RENDER_PARAMS)
 	p_tex[28].Draw(200,100);
 	p_font.Draw("2.0",442,140,0x68,0x68,0x68);
 	p_font.Draw("Click to start",320-7*8,400);
+	p_font.Draw("E to edit",320-5*8,400+8*2,0x80,0x80,0x80);
 	// Scores.
 	_scores.Render(p_renderer,p_tex,p_font,p_game);
 }

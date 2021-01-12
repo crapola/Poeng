@@ -20,7 +20,7 @@ private:
 	std::minstd_rand _rng{};
 	int _mouse_x{320},_mouse_y{240};
 	int _mouse_button{};
-	const int kSelectionMax=BrickTypes::END-2;
+	const int kSelectionMax=BrickTypes::END-2-7;
 	int _selection{};
 };
 }

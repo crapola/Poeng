@@ -22,6 +22,14 @@ int GridToPixelY(int p_y)
 {
 	return p_y*kBrickH+kMapCoordY;
 }
+bool BrickIsCollidable(Cell p_b)
+{
+	return p_b>BrickTypes::NONE && p_b<BrickTypes::RES_RED_DOWN;
+}
+bool BrickIsPower(Cell p_b)
+{
+	return p_b>=BrickTypes::POWER_SIZE && p_b <=BrickTypes::POWER_GRAVITY;
+}
 Cell Level::at(size_t x,size_t y) const
 {
 	return tiles.at(y*40+x);
@@ -422,7 +430,7 @@ void Game::Tick()
 			auto b=Break(gx,gy);
 			if (b)
 			{
-				if (*b>=BrickTypes::POWER_SIZE)
+				if (BrickIsPower(*b))
 				{
 					const int new_balls=BonusCollect(*b,o,gx,gy);
 					*b=0;
@@ -473,7 +481,7 @@ void Game::BallSpawn(Object o)
 {
 	o.vx=std::abs(o.vx+(rand()%10)/10.f);
 	o.vy=std::abs(o.vy+(rand()%10)/10.f);
-	o.acc_y+=(5-rand()%10)/10.f;
+	//o.acc_y+=(5-rand()%10)/10.f;
 	if (_balls.size()<kBallNum)
 		_balls.push_back(o);
 }
@@ -513,7 +521,7 @@ void Game::BonusSpawn(Cell* c)
 {
 	if (rand()%kBonusRarity==0)
 	{
-		int r=rand()%(BrickTypes::END-BrickTypes::POWER_SIZE);
+		int r=rand()%(BrickTypes::POWER_GRAVITY-BrickTypes::POWER_SIZE+1);
 #ifdef BONUS_DEBUG
 		r=BONUS_DEBUG;
 #endif
@@ -532,7 +540,9 @@ Cell* Game::Break(int p_x,int p_y)
 	// Ignore empty.
 	if (c==0) return nullptr;
 	// Ignore power-ups.
-	if (c>=BrickTypes::POWER_SIZE) return &c;
+	if (BrickIsPower(c)) return &c;
+	// Ignore inactive res bricks.
+	if (c>=BrickTypes::RES_RED_DOWN) return &c;
 	// Regular bricks.
 	_events.push({GameEvent::Event::HIT_BRICK,c,p_x,p_y});
 	if (c==BrickTypes::METAL2)
@@ -540,20 +550,50 @@ Cell* Game::Break(int p_x,int p_y)
 		c--;
 		return &c;
 	}
-	if (c<=BrickTypes::METAL1 && c!=BrickTypes::SOLID)
+	if (c!=BrickTypes::SOLID)
 	{
 		// Score.
 		_score+=50+c*10;
-		// Delete.
-		c=0;
 		// Reduce brick count.
-		if (--lvl.bricks==0)
+		if (c<BrickTypes::RES_RED)
 		{
-			lvl.wall_strength=0;
-			_events.push({GameEvent::Event::HIT_WALL,0,0,0});
+			if (--lvl.bricks==0)
+			{
+				lvl.wall_strength=0;
+				_events.push({GameEvent::Event::HIT_WALL,0,0,0});
+			}
+			// Delete.
+			c=0;
+		}
+		else
+		{
+			// Special brick.
+			const int num=BricksCount(c);
+			if (num==1)
+			{
+				// Respawn them all.
+				std::for_each(lvl.tiles.begin(),lvl.tiles.end(),[c](Cell& x)
+				{
+					if (x==c+kColoredBricksCount)
+					{
+						x-=kColoredBricksCount;
+					}
+				});
+			}
+			else
+			{
+				// Switch off that brick.
+				c+=kColoredBricksCount;
+			}
 		}
 	}
 	return &c;
+}
+int Game::BricksCount(Cell p_brick)
+{
+	const auto& l=LevelCurrent();
+	const int count=std::count_if(l.tiles.begin(),l.tiles.end(),[p_brick](const Cell& c){return c==p_brick;});
+	return count;
 }
 std::optional<Game::CollisionInfo> Game::Collide(Object& o)
 {
@@ -567,14 +607,14 @@ std::optional<Game::CollisionInfo> Game::Collide(Object& o)
 	{
 		auto xc=corners[i];
 		auto yc=corners[i+1];
-		if (lvl.atPixels(xc+o.x+o.vx, yc+o.y)>0)
+		if (BrickIsCollidable(lvl.atPixels(xc+o.x+o.vx, yc+o.y)))
 		{
 			xb=xc+o.x+o.vx;
 			yb=yc+o.y;
 			hit_x=true;
 			break;
 		}
-		if (lvl.atPixels(xc+o.x, yc+o.y+o.vy)>0)
+		if (BrickIsCollidable(lvl.atPixels(xc+o.x, yc+o.y+o.vy)))
 		{
 			xb=xc+o.x;
 			yb=yc+o.y+o.vy;
@@ -604,7 +644,7 @@ void Game::Explode(int p_x,int p_y)
 		for (int x=first_x; x<first_x+3; ++x)
 		{
 			auto c=Break(x,y);
-			if (c && *c>=POWER_SIZE)
+			if (c && BrickIsPower(*c))
 			{
 				if (*c!=POWER_BOMB)
 				{
@@ -629,13 +669,13 @@ void Game::LaserUpdate()
 	_laser.x+=_laser.vx;
 	// Collision.
 	const auto& lvl=_levels.get()->at(_level_current);
-	if (lvl.atPixels(_laser.x,_laser.y)>0)
+	if (BrickIsCollidable(lvl.atPixels(_laser.x,_laser.y)))
 	{
 		const int gx=PixelToGridX(_laser.x);
 		const int gy=PixelToGridY(_laser.y);
 		auto c=Break(gx,gy);
 		// Handle bonus.
-		if (c && *c>=POWER_SIZE)
+		if (c && BrickIsPower(*c))
 		{
 			const int rx=GridToPixelX(gx);
 			const int ry=GridToPixelY(gy);
