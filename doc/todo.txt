@@ -1,3 +1,1 @@
 - Better timing.
-- Editor.
-- New bricks (respawning).
