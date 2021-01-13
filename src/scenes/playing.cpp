@@ -222,16 +222,23 @@ void Playing::Render(RENDER_PARAMS)
 	// Wall.
 	if (lvl.wall_strength>0)
 	{
-		// Wiggle.
-		float d=(624-_wall_x)*1.2f;
-		_wall_x+=(624-_wall_x)/10.f+d ;
+		// Draw strength.
+		const int text_x=640-16-(sizeof("WALL")-1)*8;
+		const int space=4;
+		p_font.Draw("WALL",text_x,450,0xe0,0xe0,0xe0);
+		SDL_SetRenderDrawColor(p_renderer,255,0,0,255);
+		SDL_Rect r{text_x-space,450,-lvl.wall_strength,8};
+		SDL_RenderFillRect(p_renderer,&r);
+		// Draw wall and wiggle.
+		const float d=(624-_wall_x)*1.2f;
+		_wall_x+=(624-_wall_x)/10.f+d;
 		for (int y=0; y<11*kBrickH; y+=kBrickH)
 			p_tex[29].Draw(_wall_x,64+y);
 	}
 	// Pause.
 	if (_paused)
 	{
-		p_font.Draw("** PAUSED **",500,450,0xC2,0,0);
+		p_font.Draw("** PAUSED **",500,450+8*2,0xC2,0,0);
 		// Box.
 		SDL_Rect r_black{205,220,430-205,258-220};
 		SDL_Rect r_border{206,221,429-206,257-221};
@@ -257,6 +264,7 @@ void Playing::Render(RENDER_PARAMS)
 		p_font.Draw("Press any key to continue...",320-28*4,270,0xc8,0xc8,0xc8);
 	}
 	// Effects.
+	SDL_SetRenderDrawColor(p_renderer,255,255,255,255);
 	if (!_vfx.empty())
 	{
 		for (auto& e:_vfx)
