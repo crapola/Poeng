@@ -579,6 +579,7 @@ Cell* Game::Break(int p_x,int p_y)
 						x-=kColoredBricksCount;
 					}
 				});
+				_events.push({GameEvent::RESBRICKS,0,p_x,p_y});
 			}
 			else
 			{

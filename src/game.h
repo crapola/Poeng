@@ -83,6 +83,7 @@ struct GameEvent
 		WIN,
 		LOSE_ONE_BALL,
 		DESTROY_POWER, // value=BrickType x,y=pixel position
+		RESBRICKS, // x,y=grid position
 	};
 	Event event{NONE};
 	int value{},x{},y{};

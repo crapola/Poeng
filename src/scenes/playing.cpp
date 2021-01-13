@@ -390,6 +390,8 @@ void Playing::Update(UP_PARAMS)
 		case GameEvent::Event::DESTROY_POWER:
 			p_audio.Play(16,ge.x);
 			break;
+		case GameEvent::Event::RESBRICKS:
+			p_audio.Play(18,ge.x*kBrickW);
 		default:
 			break;
 		}

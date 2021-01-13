@@ -92,7 +92,7 @@ void Editor::Render(RENDER_PARAMS)
 	}
 	// Draw toolbar.
 	{
-		const int tool_x{200},tool_y{1};
+		const int tool_x{640-23*kBrickW-1},tool_y{1};
 		// bricks.bmp
 		p_tex[17].Draw(tool_x,tool_y,0,0,kBrickW*9,kBrickH);
 		// Power-ups.

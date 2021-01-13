@@ -22,7 +22,8 @@ constexpr const char* kSoundFiles[]=
 	"data/sounds/new/powerglue.wav",
 	"data/sounds/new/spring.wav", // 15
 	"data/sounds/new/destroy.wav",
-	"data/sounds/new/glu.wav"
+	"data/sounds/new/glu.wav",
+	"data/sounds/new/res.wav"
 };
 Audio::Audio()
 {
