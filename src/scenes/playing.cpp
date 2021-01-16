@@ -16,8 +16,6 @@ Playing::~Playing()
 void Playing::Enter(ENTER_PARAMS)
 {
 	p_game.Start();
-	// TODO: uncomment
-	//p_game.LevelsShuffle();
 	_vfx.clear();
 	// Capture pointer inside window.
 	SDL_SetRelativeMouseMode(SDL_TRUE);

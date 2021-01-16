@@ -16,7 +16,6 @@ enum MySdlEvents
 	SCENE_SWITCH=SDL_USEREVENT,
 	EXIT
 };
-void SceneChange(int scene_id);
 #define ENTER_PARAMS Game& p_game
 #define EVENT_PARAMS const SDL_Event& p_event,Game& p_game,int p_mx,int p_my
 #define EXIT_PARAMS Game& p_game

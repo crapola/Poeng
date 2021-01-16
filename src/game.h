@@ -123,6 +123,8 @@ public:
 	bool LevelsLoad(const char* p_path);
 	void LevelsReset();
 	void LevelsShuffle();
+	bool LevelsShuffleOnStart() const;
+	void LevelsShuffleOnStart(bool);
 	void LevelsSave(const char* path) const;
 	void LevelSet(size_t lvl);
 	void LevelsValidate();
@@ -167,5 +169,6 @@ private:
 	Object _laser{};
 	int _lives{};
 	int _score{};
+	bool _shuffle_on_start{true};
 };
 }

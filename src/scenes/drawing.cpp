@@ -86,14 +86,14 @@ void DrawBrick(const std::vector<Texture>& p_tex,Cell p_brick,int p_x,int p_y,ui
 	{
 		if (p_brick>=BrickTypes::RES_RED)
 		{
-				if (p_brick>=BrickTypes::RES_RED_DOWN)
-				{
-					p_tex[31].Draw(x,y,(p_brick-BrickTypes::RES_RED_DOWN)*kBrickW,kBrickH,kBrickW,kBrickH);
-				}
-				else
-				{
-					p_tex[31].Draw(x,y,(p_brick-BrickTypes::RES_RED)*kBrickW,0,kBrickW,kBrickH);
-				}
+			if (p_brick>=BrickTypes::RES_RED_DOWN)
+			{
+				p_tex[31].Draw(x,y,(p_brick-BrickTypes::RES_RED_DOWN)*kBrickW,kBrickH,kBrickW,kBrickH);
+			}
+			else
+			{
+				p_tex[31].Draw(x,y,(p_brick-BrickTypes::RES_RED)*kBrickW,0,kBrickW,kBrickH);
+			}
 		}
 		else
 		{

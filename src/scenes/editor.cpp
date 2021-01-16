@@ -9,14 +9,15 @@ Editor::~Editor()
 {}
 void Editor::Enter(ENTER_PARAMS)
 {
+	p_game.LevelsShuffleOnStart(false);
 	p_game.Start();
 }
 void Editor::Exit(EXIT_PARAMS)
 {
 	p_game.LevelsValidate();
-//#ifdef NDEBUG
+#ifdef NDEBUG
 	p_game.LevelsSave("userlevels.bin");
-//#endif
+#endif
 }
 void Editor::Event(EVENT_PARAMS)
 {
@@ -76,7 +77,7 @@ void Editor::Render(RENDER_PARAMS)
 	static uint8_t timer{};
 	timer=(timer+1)%3;
 	// Clear.
-	SDL_SetRenderDrawColor(p_renderer,32,32,32,255);
+	SDL_SetRenderDrawColor(p_renderer,2,4,8,255);
 	SDL_RenderClear(p_renderer);
 	// Title.
 	p_font.Draw("Editor",16,8);
@@ -96,7 +97,7 @@ void Editor::Render(RENDER_PARAMS)
 		// bricks.bmp
 		p_tex[17].Draw(tool_x,tool_y,0,0,kBrickW*9,kBrickH);
 		// Power-ups.
-		for(size_t p=9;p<15;++p)
+		for (size_t p=9; p<15; ++p)
 		{
 			p_tex[p].Draw(tool_x+kBrickW*(9+(p-9)),tool_y);
 		}

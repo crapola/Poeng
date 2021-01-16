@@ -200,6 +200,14 @@ void Game::LevelsShuffle()
 {
 	std::random_shuffle(_levels->begin(),_levels->end());
 }
+bool Game::LevelsShuffleOnStart() const
+{
+	return _shuffle_on_start;
+}
+void Game::LevelsShuffleOnStart(bool p_s)
+{
+	_shuffle_on_start=p_s;
+}
 void Game::LevelsValidate()
 {
 	size_t num=_levels->size();
@@ -267,22 +275,8 @@ void Game::Start()
 	_balls_next.clear();
 	_balls.push_back({15,15,0.5,0.25});
 	_balls[0].glued=true;
-	//std::random_shuffle(_levels->begin(),_levels->end());
-
-	//_player_power=BrickTypes::POWER_LASER;
-	//test
-	//_balls.push_back({550,150,-3.75,1.325});
-	// Test lots of balls
-	//for (int i=0; i<10; ++i) _balls.push_back({260,32,6,0.5325*i});
-	/*
-		_level_current=20;
-		for (auto& tm:*_levels)
-		{
-			std::fill(tm.tiles.begin(),tm.tiles.end(),rand()%(BrickTypes::POWER_BOMB+1));
-			tm.wall_strength=500000;
-		}
-	*/
-
+	if (_shuffle_on_start)
+		LevelsShuffle();
 }
 void Game::Tick()
 {
@@ -593,7 +587,10 @@ Cell* Game::Break(int p_x,int p_y)
 int Game::BricksCount(Cell p_brick)
 {
 	const auto& l=LevelCurrent();
-	const int count=std::count_if(l.tiles.begin(),l.tiles.end(),[p_brick](const Cell& c){return c==p_brick;});
+	const int count=std::count_if(l.tiles.begin(),l.tiles.end(),[p_brick](const Cell& c)
+	{
+		return c==p_brick;
+	});
 	return count;
 }
 std::optional<Game::CollisionInfo> Game::Collide(Object& o)
@@ -682,7 +679,6 @@ void Game::LaserUpdate()
 			const int ry=GridToPixelY(gy);
 			if (*c==POWER_BOMB)
 			{
-
 				_events.push({GameEvent::COLLECT_POWER,*c,rx,ry});
 				Explode(gx,gy);
 			}
@@ -736,7 +732,6 @@ void Game::TravelForwards()
 	{
 		LevelSet(++_level_current);
 	}
-
 }
 void Game::Win()
 {
