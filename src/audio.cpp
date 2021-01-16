@@ -67,6 +67,8 @@ void Audio::Play(size_t p_sample,int p_pan)
 {
 	int pos=((p_pan*180)/640 + 360-90)%360;
 	int chan=Mix_PlayChannel(-1,_chunks.at(p_sample).get(),0);
+#ifndef __EMSCRIPTEN__
 	Mix_SetPosition(chan,pos,0);
+#endif // !__EMSCRIPTEN__
 }
 }
