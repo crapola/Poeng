@@ -3,6 +3,7 @@ High Scores
 *******************************************************************************/
 #pragma once
 #include <array>
+#include <string>
 class HighScores
 {
 public:

@@ -7,6 +7,7 @@ Game
 #include <queue>
 #include <memory>
 #include <optional>
+#include <random>
 #include <vector>
 namespace poeng
 {
@@ -170,5 +171,6 @@ private:
 	int _lives{};
 	int _score{};
 	bool _shuffle_on_start{true};
+	std::default_random_engine _rng{std::random_device{}()};
 };
 }

@@ -1,6 +1,7 @@
 #include "Game.h"
 // std
 #include <algorithm>
+#include <ctime> // TODO: Seeding rng, remove later.
 #include <fstream>
 #include <iostream>
 //#define BONUS_DEBUG 5
@@ -78,6 +79,8 @@ Game::Game()
 {
 	_balls.reserve(kBallNum);
 	_balls_next.reserve(kBallNum);
+	// TODO: Remove when MingW fixes random_device. https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85494
+	_rng.seed(std::time(nullptr));
 }
 Game::~Game()
 {
@@ -198,7 +201,8 @@ void Game::LevelSet(size_t p_lvl)
 }
 void Game::LevelsShuffle()
 {
-	std::random_shuffle(_levels->begin(),_levels->end());
+	//std::random_shuffle(_levels->begin(),_levels->end());
+	std::shuffle(_levels->begin(),_levels->end(),_rng);
 }
 bool Game::LevelsShuffleOnStart() const
 {

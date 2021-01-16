@@ -1,6 +1,7 @@
 #include "audio.h"
 // std
 #include <array>
+#include <string>
 namespace poeng
 {
 constexpr const char* kSoundFiles[]=

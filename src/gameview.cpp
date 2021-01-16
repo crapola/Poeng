@@ -1,7 +1,6 @@
 #include "GameView.h"
 // std
 #include <algorithm>
-#include <experimental/array>
 // local
 #include "audio.h"
 namespace poeng
@@ -78,7 +77,7 @@ bool GameView::Event(const SDL_Event& p_event,int p_mx,int p_my)
 void GameView::LoadImages()
 {
 	// Load bitmaps.
-	const auto arr=std::experimental::make_array(
+	const std::array arr={
 					   "data/images/backgrounds.bmp",//0
 					   "data/images/ball.bmp",
 					   "data/images/ball2.bmp",
@@ -111,7 +110,7 @@ void GameView::LoadImages()
 					   "data/images/wall.bmp",
 					   "data/images/new/bonus_spring.bmp",//30
 					   "data/images/new/bricksres.bmp"
-				   );
+	};
 	auto loader=[](const char* str)->Bitmap
 	{
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Loading %s.",str);
