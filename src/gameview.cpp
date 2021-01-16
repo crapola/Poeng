@@ -1,4 +1,4 @@
-#include "GameView.h"
+#include "gameview.h"
 // std
 #include <algorithm>
 // local
@@ -31,13 +31,6 @@ GameView::~GameView()
 void GameView::AudioInit()
 {
 	_audio.Load();
-	/*
-	// Test audio
-	for (int x=0;x<=640;x+=10)
-	{
-		_audio.Play(0,4,x);SDL_Delay(150);
-	}
-	*/
 }
 void GameView::CreateTextures(SDL_Renderer* p_renderer)
 {
@@ -54,12 +47,6 @@ bool GameView::Event(const SDL_Event& p_event,int p_mx,int p_my)
 {
 	switch (p_event.type)
 	{
-	/*case SDL_USEREVENT:
-		std::cout<<"UserEvent 0 "<<p_event.user.code;
-		break;*/
-	/*case SDL_USEREVENT+1:
-		std::cout<<"UserEvent 1 "<<p_event.user.code;
-		break;*/
 	case MySdlEvents::EXIT:
 		return false;
 		break;
@@ -77,39 +64,40 @@ bool GameView::Event(const SDL_Event& p_event,int p_mx,int p_my)
 void GameView::LoadImages()
 {
 	// Load bitmaps.
-	const std::array arr={
-					   "data/images/backgrounds.bmp",//0
-					   "data/images/ball.bmp",
-					   "data/images/ball2.bmp",
-					   "data/images/ball3.bmp",
-					   "data/images/bat.bmp",
-					   "data/images/bat2.bmp",//5
-					   "data/images/bat3.bmp",
-					   "data/images/bat4.bmp",
-					   "data/images/beam.bmp",
-					   "data/images/bonus1.bmp",
-					   "data/images/bonus2.bmp",//10
-					   "data/images/bonus3.bmp",
-					   "data/images/bonus4.bmp",
-					   "data/images/bonus5.bmp",
-					   "data/images/bonus6.bmp",
-					   "data/images/bonus6b.bmp",//15
-					   "data/images/borders.bmp",
-					   "data/images/bricks.bmp",
-					   "data/images/explo0.bmp",
-					   "data/images/explo1.bmp",
-					   "data/images/explo2.bmp",//20
-					   "data/images/explo3.bmp",
-					   "data/images/explo4.bmp",
-					   "data/images/explo5.bmp",
-					   "data/images/explo6.bmp",
-					   "data/images/explo7.bmp",//25
-					   "data/images/font.bmp",
-					   "data/images/life.bmp",
-					   "data/images/logo.bmp",
-					   "data/images/wall.bmp",
-					   "data/images/new/bonus_spring.bmp",//30
-					   "data/images/new/bricksres.bmp"
+	const std::array arr=
+	{
+		"data/images/backgrounds.bmp",//0
+		"data/images/ball.bmp",
+		"data/images/ball2.bmp",
+		"data/images/ball3.bmp",
+		"data/images/bat.bmp",
+		"data/images/bat2.bmp",//5
+		"data/images/bat3.bmp",
+		"data/images/bat4.bmp",
+		"data/images/beam.bmp",
+		"data/images/bonus1.bmp",
+		"data/images/bonus2.bmp",//10
+		"data/images/bonus3.bmp",
+		"data/images/bonus4.bmp",
+		"data/images/bonus5.bmp",
+		"data/images/bonus6.bmp",
+		"data/images/bonus6b.bmp",//15
+		"data/images/borders.bmp",
+		"data/images/bricks.bmp",
+		"data/images/explo0.bmp",
+		"data/images/explo1.bmp",
+		"data/images/explo2.bmp",//20
+		"data/images/explo3.bmp",
+		"data/images/explo4.bmp",
+		"data/images/explo5.bmp",
+		"data/images/explo6.bmp",
+		"data/images/explo7.bmp",//25
+		"data/images/font.bmp",
+		"data/images/life.bmp",
+		"data/images/logo.bmp",
+		"data/images/wall.bmp",
+		"data/images/new/bonus_spring.bmp",//30
+		"data/images/new/bricksres.bmp"
 	};
 	auto loader=[](const char* str)->Bitmap
 	{
@@ -121,15 +109,9 @@ void GameView::LoadImages()
 			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"SDL_LoadBMP() failed: %s\n",err);
 			throw std::runtime_error(std::string("File not found.\n")+std::string(err));
 		}
-		return std::move(bmp);
+		return bmp;
 	};
 	std::transform(arr.begin(),arr.end(),std::back_inserter(_bitmaps),loader);
-	/*
-	for (auto& b:_bitmaps)
-	{
-		std::cout<<b._name<<"\n";
-	}
-	*/
 }
 void GameView::Render(SDL_Renderer* p_renderer)
 {

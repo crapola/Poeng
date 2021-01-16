@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "game.h"
 // std
 #include <algorithm>
 #include <ctime> // TODO: Seeding rng, remove later.

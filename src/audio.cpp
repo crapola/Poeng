@@ -35,9 +35,9 @@ Audio::Audio()
 	// Open 44.1KHz, signed 16bit, system byte order, stereo audio, using 1024 byte chunks.
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024)==-1)
 	{
-		SDL_LogError(0,"Mix_OpenAudio: %s\n", Mix_GetError());
+		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"Mix_OpenAudio: %s\n", Mix_GetError());
 	}
-	SDL_LogInfo(0,"Audio initalized.");
+	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Audio initalized.");
 }
 Audio::~Audio()
 {
@@ -56,7 +56,7 @@ void Audio::Load()
 			msg+=". Mix_LoadWAV: ";
 			msg+=Mix_GetError();
 			msg+='\n';
-			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,msg.c_str());
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"%s",msg.c_str());
 			throw std::runtime_error(msg);
 			continue;
 		}

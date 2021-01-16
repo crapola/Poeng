@@ -1,4 +1,4 @@
-#include "Font.h"
+#include "font.h"
 // local
 #include "bitmap.h"
 namespace poeng
