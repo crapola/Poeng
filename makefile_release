@@ -21,6 +21,7 @@ src_files=\
 	$(wildcard src/*.cpp)\
 	$(wildcard src/*/*.cpp)
 #   $(wildcard src/*/*/*.cpp) etc...
+src_files:=$(filter-out src/web/main.cpp,$(src_files))
 objdir=bin
 objs=$(src_files:src/%.cpp=$(objdir)/%.o)
 target=$(objdir)/$(exe).exe

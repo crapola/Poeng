@@ -64,8 +64,9 @@ void Editor::Event(EVENT_PARAMS)
 		break;
 	case SDL_MOUSEWHEEL:
 	{
-		// Assume p_event.wheel.y is 1 or -1.
-		_selection=(kSelectionMax+_selection+p_event.wheel.y)%kSelectionMax;
+		// wheel.y can be greater than 1 on some platforms, so we take the sign.
+		const int delta=(p_event.wheel.y>0)-(p_event.wheel.y<0);
+		_selection=(kSelectionMax+_selection+delta)%kSelectionMax;
 	}
 	break;
 	default:

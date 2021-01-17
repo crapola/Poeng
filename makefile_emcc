@@ -16,7 +16,7 @@ src_files=\
 	$(wildcard src/*.cpp)\
 	$(wildcard src/*/*.cpp)
 src_files:=$(filter-out src/main.cpp,$(src_files))
-objdir=bin
+objdir=bin/webbuild
 objs=$(src_files:src/%.cpp=$(objdir)/%.o)
 target=$(objdir)/$(exe)
 
