@@ -7,9 +7,7 @@ includes=-IF:\Libraries\SDL2-2.0.10\x86_64-w64-mingw32\include\SDL2 \
 # Extra gcc options.
 options=-DNDEBUG -O3
 # Linker options.
-LDFLAGS=-LF:\Libraries\SDL2-2.0.10\x86_64-w64-mingw32\lib \
--LF:\Libraries\SDL2_mixer-2.0.4\x86_64-w64-mingw32\lib
-LDLIBS=-s USE_SDL=2 --embed-file data
+LDLIBS=-s USE_SDL=2 --embed-file data --shell-file resources/shell.html
 CXX=em++
 #-------------------------------------------------------------------------------
 src_folders=src
