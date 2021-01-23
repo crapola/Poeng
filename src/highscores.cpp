@@ -40,7 +40,6 @@ bool HighScores::Load()
 		std::getline(file,e.second,'\0');
 	}
 	file.close();
-	//Sort();
 	return true;
 }
 void HighScores::Populate()

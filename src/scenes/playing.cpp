@@ -47,10 +47,6 @@ void Playing::Event(EVENT_PARAMS)
 		}
 		break;
 	case SDL_MOUSEMOTION:
-		//_mouse_x=p_event.motion.xrel; Updates too fast.
-		//_mouse_x=p_event.motion.x;
-		//_mouse_y=p_event.motion.y;
-		//SDL_Log("mouse %d,%d",_mouse_x,_mouse_y);
 		_mouse_x=p_mx;
 		_mouse_y=p_my;
 		break;
@@ -130,66 +126,6 @@ void Playing::Render(RENDER_PARAMS)
 	{
 		p_tex[27].Draw(16+i*5,18);
 	}
-	/*
-	// Draw background.
-	{
-		const int kBackgroundTop=64;
-		const int kBackgroundRows=11;
-		int style=32*(p_game.LevelGet()%4);
-		for (int x=0; x<20; ++x)
-		{
-			p_tex[0].Draw(x*32,kBackgroundTop,32,style,32,32);
-			for (int y=32; y<32*kBackgroundRows; y+=32)
-			{
-				p_tex[0].Draw(x*32,kBackgroundTop+y,0,style,32,32);
-			}
-		}
-	}
-	// Draw bricks.
-	auto lvl=p_game.LevelCurrent();
-	SDL_SetRenderDrawColor(p_renderer,0,0,0,255);
-	for (size_t y=0; y<11; ++y)
-	{
-		for (size_t x=0; x<40; ++x)
-		{
-			auto b=lvl.at(x,y);
-			if (b==0)
-				continue;
-			const int px=x*kBrickW;
-			const int py=64+y*kBrickH;
-			// Shadow.
-			if (b!=BrickTypes::POWER_BOMB)
-			{
-				SDL_Rect r{px+8,py+8,kBrickW,kBrickH};
-				SDL_RenderFillRect(p_renderer,&r);
-			}
-			// Brick or power-up.
-			if (b==BrickTypes::METAL2) b=9;
-			if (b>=BrickTypes::POWER_SIZE)
-			{
-				size_t tex=9+b-BrickTypes::POWER_SIZE;
-				if (b==BrickTypes::POWER_BOMB) tex+=(_timer%4)/2;
-				if (b==BrickTypes::POWER_GRAVITY) tex=30;
-				p_tex[tex].Draw(px,py);
-				continue;
-			}
-			b=b-1;
-			p_tex[17].Draw(px,py, b*kBrickW,0, kBrickW,kBrickH);
-		}
-	}
-	SDL_SetRenderDrawColor(p_renderer,255,255,255,255);
-	// Draw borders.
-	const int kBorderTop=32;
-	const int kBorderBottom=416;
-	int seed=p_game.LevelGet();
-	_rng.seed(seed+1);
-	for (int x=0; x<20; ++x)
-	{
-		int r=_rng()%3;
-		p_tex[16].Draw(x*32,kBorderTop,r*32,0,32,32);
-		p_tex[16].Draw(x*32,kBorderBottom,r*32,32,32,32);
-	}
-	*/
 	DrawBackground(p_lerp,p_renderer,p_tex,p_font,p_game,_rng,_timer);
 	// Player.
 	{

@@ -49,7 +49,7 @@ int main(int, char**) try
 {
 	SDL_Log("Poeng for the web.");
 	Window window("Poeng", 640, 480, SDL_WINDOW_RESIZABLE);
-	renderer=SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer=SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!renderer)
 	{
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Renderer creation failed: %s\n", SDL_GetError());

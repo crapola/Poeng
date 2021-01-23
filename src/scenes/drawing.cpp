@@ -3,7 +3,6 @@ namespace poeng
 {
 void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng,uint8_t p_timer)
 {
-	//static uint8_t timer{};
 	// Draw background.
 	{
 		const int kBackgroundTop=64;
@@ -19,7 +18,6 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng,uint8_t p_timer)
 		}
 	}
 	// Draw bricks.
-	//timer++;
 	auto lvl=p_game.LevelCurrent();
 	SDL_SetRenderDrawColor(p_renderer,0,0,0,255);
 	for (size_t y=0; y<11; ++y)
@@ -38,28 +36,6 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng,uint8_t p_timer)
 				SDL_RenderFillRect(p_renderer,&r);
 			}
 			DrawBrick(p_tex,b,x,y,p_timer);
-			/*
-			const int px=x*kBrickW;
-			const int py=64+y*kBrickH;
-			// Shadow.
-			if (b!=BrickTypes::POWER_BOMB)
-			{
-			SDL_Rect r{px+8,py+8,kBrickW,kBrickH};
-			SDL_RenderFillRect(p_renderer,&r);
-			}
-			// Brick or power-up.
-			if (b==BrickTypes::METAL2) b=9;
-			if (b>=BrickTypes::POWER_SIZE)
-			{
-			size_t tex=9+b-BrickTypes::POWER_SIZE;
-			if (b==BrickTypes::POWER_BOMB) tex+=(timer%4)/2;
-			if (b==BrickTypes::POWER_GRAVITY) tex=30;
-			p_tex[tex].Draw(px,py);
-			continue;
-			}
-			b=b-1;
-			p_tex[17].Draw(px,py, b*kBrickW,0, kBrickW,kBrickH);
-			*/
 		}
 	}
 	SDL_SetRenderDrawColor(p_renderer,255,255,255,255);

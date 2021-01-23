@@ -145,7 +145,6 @@ bool Game::LevelsLoad(const char* p_path)
 	std::ifstream file(p_path,std::ios::binary);
 	if (!file.is_open())
 	{
-		//throw std::runtime_error(std::string("Levels file not found: ")+std::string(p_path));
 		return false;
 	}
 	std::vector<char> file_content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
@@ -159,7 +158,6 @@ bool Game::LevelsLoad(const char* p_path)
 	std::transform(file_content.begin(),file_content.end(),file_content.begin(),fix_values);
 	const size_t kSize=kMapW*kMapH;
 	size_t num=std::min(_levels->size(),file_content.size()/kSize);
-	//std::cout<<"There are "<<num<<" levels\n";
 	for (size_t i=0; i<num; ++i)
 	{
 		auto file_it=file_content.begin()+i*kSize;
@@ -167,14 +165,6 @@ bool Game::LevelsLoad(const char* p_path)
 		std::copy_n(file_it,kSize,tiles_it);
 		// Wall strength.
 		_levels->at(i).wall_strength=10+i/2;
-		/*
-		// Count breakables.
-		auto breakable=[](const Cell& c)
-		{
-			return c>BrickTypes::NONE&&c!=BrickTypes::SOLID;
-		};
-		_levels->at(i).bricks=std::count_if(_levels->at(i).tiles.begin(),_levels->at(i).tiles.end(),breakable);
-		*/
 	}
 	// Keep copy to reset.
 	*_levels_copy=*_levels;
@@ -201,7 +191,6 @@ void Game::LevelSet(size_t p_lvl)
 }
 void Game::LevelsShuffle()
 {
-	//std::random_shuffle(_levels->begin(),_levels->end());
 	std::shuffle(_levels->begin(),_levels->end(),_rng);
 }
 bool Game::LevelsShuffleOnStart() const
@@ -339,7 +328,6 @@ void Game::Tick()
 					o.x=std::max(5.0f,o.x);
 					o.vx=PushImpulse(o.vx);
 					o.vy=(hit-(PlayerSize()+kBallSize)/2)/3.0f;
-					//_events.push({GameEvent::HIT_BAT,0,16,0});
 				}
 			}
 		}
@@ -479,7 +467,6 @@ void Game::BallSpawn(Object o)
 {
 	o.vx=std::abs(o.vx+(rand()%10)/10.f);
 	o.vy=std::abs(o.vy+(rand()%10)/10.f);
-	//o.acc_y+=(5-rand()%10)/10.f;
 	if (_balls.size()<kBallNum)
 		_balls.push_back(o);
 }
@@ -654,13 +641,6 @@ void Game::Explode(int p_x,int p_y)
 					const int ry=GridToPixelY(p_y);
 					_events.push({GameEvent::DESTROY_POWER,*c,rx,ry});
 				}
-				/*
-				else
-				{
-					*c=0;
-					Explode(x,y);
-				}
-				*/
 				*c=0;
 			};
 		}
