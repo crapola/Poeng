@@ -17,6 +17,7 @@ public:
 	virtual void Update(UP_PARAMS) override;
 private:
 	std::minstd_rand _rng{};
+	uint8_t _timer{};
 	float _wall_x{624};
 	struct Effect
 	{

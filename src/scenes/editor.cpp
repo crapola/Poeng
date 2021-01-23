@@ -75,22 +75,20 @@ void Editor::Event(EVENT_PARAMS)
 }
 void Editor::Render(RENDER_PARAMS)
 {
-	static uint8_t timer{};
-	timer=(timer+1)%3;
 	// Clear.
 	SDL_SetRenderDrawColor(p_renderer,2,4,8,255);
 	SDL_RenderClear(p_renderer);
 	// Title.
 	p_font.Draw("Editor",16,8);
 	// Level.
-	DrawBackground(p_renderer,p_tex,p_font,p_game,_rng);
+	DrawBackground(p_lerp,p_renderer,p_tex,p_font,p_game,_rng,_timer);
 	// Draw ghost.
-	if (timer)
+	if (_timer%3)
 	{
 		const int x=PixelToGridX(_mouse_x);
 		const int y=PixelToGridY(_mouse_y);
 		const Cell b=SelectionAsBrick();
-		DrawBrick(p_tex,b,x,y,timer);
+		DrawBrick(p_tex,b,x,y,_timer);
 	}
 	// Draw toolbar.
 	{
@@ -112,6 +110,7 @@ void Editor::Render(RENDER_PARAMS)
 }
 void Editor::Update(UP_PARAMS)
 {
+	++_timer;
 	if (_mouse_button)
 	{
 		p_game.EditBrick(_mouse_x,_mouse_y,BrickTypes(_mouse_button==1?SelectionAsBrick():0));

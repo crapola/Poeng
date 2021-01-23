@@ -18,6 +18,7 @@ public:
 private:
 	Cell SelectionAsBrick();
 	std::minstd_rand _rng{};
+	uint8_t _timer{};
 	int _mouse_x{320},_mouse_y{240};
 	int _mouse_button{};
 	const int kSelectionMax=BrickTypes::END-2-7;

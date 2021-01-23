@@ -113,9 +113,9 @@ void GameView::LoadImages()
 	};
 	std::transform(arr.begin(),arr.end(),std::back_inserter(_bitmaps),loader);
 }
-void GameView::Render(SDL_Renderer* p_renderer)
+void GameView::Render(SDL_Renderer* p_renderer,float p_lerp)
 {
-	_scenes[_scene_current]->Render(p_renderer,_textures,_font,_game);
+	_scenes[_scene_current]->Render(p_lerp,p_renderer,_textures,_font,_game);
 }
 void GameView::Update()
 {

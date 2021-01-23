@@ -1,9 +1,9 @@
 #include "drawing.h"
 namespace poeng
 {
-void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
+void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng,uint8_t p_timer)
 {
-	static uint8_t timer{};
+	//static uint8_t timer{};
 	// Draw background.
 	{
 		const int kBackgroundTop=64;
@@ -19,7 +19,7 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
 		}
 	}
 	// Draw bricks.
-	timer++;
+	//timer++;
 	auto lvl=p_game.LevelCurrent();
 	SDL_SetRenderDrawColor(p_renderer,0,0,0,255);
 	for (size_t y=0; y<11; ++y)
@@ -37,7 +37,7 @@ void DrawBackground(RENDER_PARAMS,std::minstd_rand& p_rng)
 				SDL_Rect r{px+8,py+8,kBrickW,kBrickH};
 				SDL_RenderFillRect(p_renderer,&r);
 			}
-			DrawBrick(p_tex,b,x,y,timer);
+			DrawBrick(p_tex,b,x,y,p_timer);
 			/*
 			const int px=x*kBrickW;
 			const int py=64+y*kBrickH;

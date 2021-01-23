@@ -13,7 +13,7 @@ int main(int, char**) try
 	SDL_Log("Debug build.");
 #endif
 	Window window("Poeng", 640, 480, SDL_WINDOW_RESIZABLE);
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	//SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
 	if (!renderer)
 	{
@@ -27,6 +27,9 @@ int main(int, char**) try
 	game_view.FontInit();
 	game_view.AudioInit();
 	// Loop.
+	int delta=0;
+	int acc=0;
+	int last_tick=SDL_GetTicks();
 	bool running = true;
 	bool minimized = false;
 	SDL_Event event;
@@ -102,12 +105,22 @@ int main(int, char**) try
 		}
 		if (!minimized)
 		{
-			game_view.Update();
-			game_view.Render(renderer);
+			const int now=SDL_GetTicks();
+			delta=now-last_tick;
+			last_tick=now;
+			acc+=delta;
+			const int kUpdatePeriod=16;
+			const int kUpdatesPerRenderMax=10;
+			for(int i=0;i<kUpdatesPerRenderMax&&acc>=kUpdatePeriod;++i)
+			{
+				acc-=kUpdatePeriod;
+				game_view.Update();
+			}
+			float lerp=acc/static_cast<float>(kUpdatePeriod);
+			game_view.Render(renderer,lerp);
 			SDL_RenderPresent(renderer);
 		}
-		//SDL_Delay(8);
-		SDL_Delay(15);
+		SDL_Delay(0);
 	}
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Exit.");
 	// Cleanup.

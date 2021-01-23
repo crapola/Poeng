@@ -26,7 +26,7 @@ public:
 	void FontInit();
 	bool Event(const SDL_Event& event,int mx,int my);
 	void LoadImages();
-	void Render(SDL_Renderer* renderer);
+	void Render(SDL_Renderer* renderer,float lerp);
 	void Update();
 private:
 	Font _font{};

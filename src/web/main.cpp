@@ -6,10 +6,8 @@
 // local
 #include "../gameview.h"
 #include "../window.h"
-
 SDL_Renderer* renderer{};
 poeng::GameView* game_view_ptr{};
-
 void loop()
 {
 	int mouse_x,mouse_y;

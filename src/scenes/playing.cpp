@@ -190,7 +190,7 @@ void Playing::Render(RENDER_PARAMS)
 		p_tex[16].Draw(x*32,kBorderBottom,r*32,32,32,32);
 	}
 	*/
-	DrawBackground(p_renderer,p_tex,p_font,p_game,_rng);
+	DrawBackground(p_lerp,p_renderer,p_tex,p_font,p_game,_rng,_timer);
 	// Player.
 	{
 		size_t tx=4;
@@ -213,7 +213,8 @@ void Playing::Render(RENDER_PARAMS)
 	auto balls=p_game.Balls();
 	auto draw_ball=[&](const Object& o)
 	{
-		p_tex[1].Draw(o.x,o.y);
+		float lerp=(o.glued||_paused)?0.0f:p_lerp;
+		p_tex[1].Draw(o.x+o.vx*lerp,o.y+o.vy*lerp);
 	};
 	std::for_each(balls.begin(),balls.end(),draw_ball);
 	auto lvl=p_game.LevelCurrent();
@@ -282,22 +283,14 @@ void Playing::Render(RENDER_PARAMS)
 				p_tex[animpic].Draw(e.x,e.y);
 			}
 			break;
-			default:
-				SDL_LogWarn(0,"No type");
-				break;
 			}
-			e.life-=1;
 		}
-		_vfx.erase(std::remove_if(_vfx.begin(),_vfx.end(),[](Effect& e)
-		{
-			return e.life<0;
-		}),_vfx.end());
 	}
 }
 void Playing::Update(UP_PARAMS)
 {
 	if (_paused || _win) return;
-	//++_timer;
+	++_timer;
 	p_game.PlayerMove(_mouse_x-_mouse_x_prev,_mouse_y);
 	_mouse_x_prev=_mouse_x;
 	if (_mouse_button) p_game.Fire();
@@ -393,6 +386,18 @@ void Playing::Update(UP_PARAMS)
 		default:
 			break;
 		}
+	}
+	// Effects logic.
+	if (!_vfx.empty())
+	{
+		for (auto& e:_vfx)
+		{
+			e.life-=1;
+		}
+		_vfx.erase(std::remove_if(_vfx.begin(),_vfx.end(),[](Effect& e)
+		{
+			return e.life<0;
+		}),_vfx.end());
 	}
 }
 }

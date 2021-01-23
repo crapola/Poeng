@@ -19,7 +19,7 @@ enum MySdlEvents
 #define ENTER_PARAMS Game& p_game
 #define EVENT_PARAMS const SDL_Event& p_event,Game& p_game,int p_mx,int p_my
 #define EXIT_PARAMS Game& p_game
-#define RENDER_PARAMS SDL_Renderer* p_renderer,const std::vector<Texture>& p_tex,const Font& p_font,const Game& p_game
+#define RENDER_PARAMS float p_lerp,SDL_Renderer* p_renderer,const std::vector<Texture>& p_tex,const Font& p_font,const Game& p_game
 #define UP_PARAMS Game& p_game,Audio& p_audio
 class Scene
 {

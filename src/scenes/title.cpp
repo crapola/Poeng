@@ -91,7 +91,7 @@ void Title::Render(RENDER_PARAMS)
 		p_font.Draw(str,x+12*8,y,r,g,b);
 	}
 	// Scores.
-	_scores.Render(p_renderer,p_tex,p_font,p_game);
+	_scores.Render(p_lerp,p_renderer,p_tex,p_font,p_game);
 }
 void Title::Update(UP_PARAMS)
 {
