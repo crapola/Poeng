@@ -6,8 +6,11 @@
 // local
 #include "../gameview.h"
 #include "../window.h"
-SDL_Renderer* renderer{};
+SDL_Renderer* renderer {};
 poeng::GameView* game_view_ptr{};
+int delta{};
+int acc{};
+int last_tick{};
 void loop()
 {
 	int mouse_x,mouse_y;
@@ -18,20 +21,6 @@ void loop()
 		{
 		case SDL_MOUSEMOTION:
 		{
-			// Compute scaled mouse position.
-			/*
-			const int x=event.motion.x;
-			const int y=event.motion.y;
-			float sx,sy;
-			SDL_RenderGetScale(renderer,&sx,&sy);
-			int w,h;
-			SDL_GetWindowSize(window,&w,&h);
-			//SDL_Log("scale %f %f, size %d %d, mouse %d %d",sx,sy,w,h,mouse_x,mouse_y);
-			const int ox=std::max(0,w-640*static_cast<int>(sx))/2;
-			const int oy=std::max(0,h-480*static_cast<int>(sy))/2;
-			mouse_x=(x-ox)/sx;
-			mouse_y=(y-oy)/sy;
-			*/
 			mouse_x=event.motion.x;
 			mouse_y=event.motion.y;
 		}
@@ -41,8 +30,19 @@ void loop()
 		}
 		game_view_ptr->Event(event,mouse_x,mouse_y);
 	}
-	game_view_ptr->Update();
-	game_view_ptr->Render(renderer);
+	const int now=SDL_GetTicks();
+	delta=now-last_tick;
+	last_tick=now;
+	acc+=delta;
+	const int kUpdatePeriod=16;
+	const int kUpdatesPerRenderMax=10;
+	for (int i=0; i<kUpdatesPerRenderMax&&acc>=kUpdatePeriod; ++i)
+	{
+		acc-=kUpdatePeriod;
+		game_view_ptr->Update();
+	}
+	float lerp=acc/static_cast<float>(kUpdatePeriod);
+	game_view_ptr->Render(renderer,lerp);
 	SDL_RenderPresent(renderer);
 }
 int main(int, char**) try
@@ -65,7 +65,8 @@ int main(int, char**) try
 	// Loop.
 	bool running = true;
 	bool minimized = false;
-	emscripten_set_main_loop(loop,70,true);
+	last_tick=SDL_GetTicks();
+	emscripten_set_main_loop(loop,0,true);
 	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION,"Exit.");
 	// Cleanup.
 	SDL_DestroyRenderer(renderer);
